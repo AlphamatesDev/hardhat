@@ -146,7 +146,7 @@ module.exports = {
     // },
     pulse: {
       url: PULSE_URL,
-      gasPrice: 7000000000000000,
+      gasPrice: 700000000000000,
       chainId: 369,
       accounts:[PULSE_DEPLOY_KEY]
     }
@@ -168,8 +168,8 @@ module.exports = {
         network: "pulse",
         chainId: 369,
         urls: {
-          apiURL: "https://scan.pulsechain.com/api",
-          browserURL: "https://scan.pulsechain.com",
+          apiURL: "https://api.scan.pulsechain.com/api",
+          browserURL: "https://api.scan.pulsechain.com/",
         }
       }
     ]
