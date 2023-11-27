@@ -1,0 +1,29 @@
+
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.7;
+
+import "hardhat/console.sol";
+
+contract VRFv2SubscriptionManager {
+  constructor(string memory _random) {
+    randomWords = _random;
+  }
+
+  uint256 public totalNum = 0;
+  string public randomWords = "word";
+
+  function random(uint256 seed) public view returns (uint256) {
+    return uint256(keccak256(abi.encodePacked(
+            tx.origin,
+            blockhash(block.number - 1),
+            block.timestamp,
+            seed
+      ))); //  ^ randomSource.seed();
+  }
+
+  function requestRandomWords() external returns(uint256) {
+    totalNum = totalNum + 1;
+    return random(block.timestamp + totalNum);
+  }
+}

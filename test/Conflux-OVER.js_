@@ -1,0 +1,85 @@
+const { expect } = require("chai");
+const { ethers, network } = require("hardhat");
+const { MerkleTree } = require('merkletreejs');
+const keccak256 = require('keccak256');
+// const { time } = require('openzeppelin-test-helpers');
+const assert = require('assert').strict;
+const provider = waffle.provider;
+
+require("@nomiclabs/hardhat-ethers");
+
+describe("OVER Token", async function () {
+    let owner, accounts;
+    let overToken, stakingContract, rewardToken;
+    before(async () => {
+        [owner, ...accounts] = await ethers.getSigners();
+
+
+        const OverToken = await ethers.getContractFactory("OVERSWAP");
+
+        console.log("mylog1");
+        overtoken = await OverToken.deploy(accounts[0].address, 10);
+        // console.log("mylog2");
+        // await overtoken.deployed();
+        // console.log("overtoken address: ", overtoken.address);
+    });
+    
+    it("Can mint", async function () {
+        // let preSaleWhitelistAddresses = [  accounts[0].address, accounts[1].address, 
+        //                             accounts[2].address, accounts[3].address, 
+        //                             accounts[4].address];
+
+        // const preSaleLeafNodes = preSaleWhitelistAddresses.map(addr => keccak256(addr));
+        // const preSaleMerkleTree = new MerkleTree(preSaleLeafNodes, keccak256, {sortPairs: true});
+        // const preSaleRootHash = preSaleMerkleTree.getRoot();
+
+        // await overToken.setMerkleRoot(preSaleMerkleTree.getHexRoot());
+
+        // const nowTime = Math.round(new Date().getTime()/1000);
+
+        // await network.provider.send("evm_increaseTime", [1652626686 - nowTime + 10]);
+        // await network.provider.send("evm_mine");
+
+        // console.log("Sale State : ", await overToken.getSaleState());
+
+        // let claimingAddress = keccak256(accounts[0].address);
+        // let hexProof = preSaleMerkleTree.getHexProof(claimingAddress);
+        // await overToken.connect(accounts[0]).mintNFT(hexProof, 2, {value: ethers.utils.parseEther("0.3")});
+        // console.log("accounts0 Balance: ", await overToken.balanceOf(accounts[0].address));
+        // console.log("total supply: ", await overToken.totalSupply())
+        // console.log("token ID: ", await overToken.tokenOfOwnerByIndex(accounts[0].address, 1))
+
+        // await network.provider.send("evm_increaseTime", [3600 * 24]);
+        // await network.provider.send("evm_mine");
+
+        // console.log("Sale State : ", await overToken.getSaleState());
+
+        // await overToken.connect(accounts[5]).mintNFT(hexProof, 2, {value: ethers.utils.parseEther("0.5")});
+        // console.log("accounts5 Balance: ", await overToken.balanceOf(accounts[5].address));
+        // console.log("total supply: ", await overToken.totalSupply())
+        // console.log("token ID: ", await overToken.tokenOfOwnerByIndex(accounts[5].address, 0))
+        // console.log("token ID: ", await overToken.tokenOfOwnerByIndex(accounts[5].address, 1))
+
+        // await overToken.connect(accounts[10]).mintNFT(hexProof, 5, {value: ethers.utils.parseEther("1.25")});
+        // console.log("accounts10 Balance: ", await overToken.balanceOf(accounts[10].address));
+        // console.log("total supply: ", await overToken.totalSupply())
+        // console.log("token ID: ", await overToken.tokenOfOwnerByIndex(accounts[10].address, 0))
+        // console.log("token ID: ", await overToken.tokenOfOwnerByIndex(accounts[10].address, 1))
+        // console.log("token ID: ", await overToken.tokenOfOwnerByIndex(accounts[10].address, 2))
+        // console.log("token ID: ", await overToken.tokenOfOwnerByIndex(accounts[10].address, 3))
+        // console.log("token ID: ", await overToken.tokenOfOwnerByIndex(accounts[10].address, 4))
+
+        // overToken.mintNFTForOwner();
+        // console.log("Owner Balance: ", await overToken.balanceOf(owner.address));
+    });
+
+    // it("Can Stake", async function () {
+
+    //     const id1 = await overToken.tokenOfOwnerByIndex(accounts[10].address, 0)
+    //     const id2 = await overToken.tokenOfOwnerByIndex(accounts[10].address, 1)
+    //     const id3 = await overToken.tokenOfOwnerByIndex(accounts[10].address, 2)
+
+    //     await network.provider.send("evm_increaseTime", [3600 * 3]);
+    //     await network.provider.send("evm_mine");
+    // });
+});

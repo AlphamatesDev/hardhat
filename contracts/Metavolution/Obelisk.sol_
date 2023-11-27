@@ -1,0 +1,312 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.7;
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import '@openzeppelin/contracts/utils/math/Math.sol';
+import "hardhat/console.sol";
+
+pragma solidity ^0.8.0;
+
+interface IVRFv2SubscriptionManager {
+    function requestRandomWords() external returns(uint256);
+}
+
+contract Obelisk is ERC1155, Ownable {
+
+    using Strings for uint256;
+
+    string public constant NAME = "Oblelisk";
+    string public constant SYMBOL = "OBELISK";
+
+    address public tropyAddress;
+
+    string public baseTokenURI;
+    
+    uint256 constant maxSupply = 20000;
+    uint256 constant maxTokenID = 4;
+    uint256 constant rewardRatePerDay = 20 * 10 ** 18; // 20 $TROPY
+
+    // uint256 private oneDay = 1 days;
+    uint256 constant oneDay = 10 minutes;
+
+    bool public paused = false;
+
+    uint256[] public initTropyAmountToMint = [90, 180, 270, 360, 450, 540, 630, 720];
+    uint256 public totalMinted = 0;
+
+    mapping(uint8 => uint256) public supplies;
+    mapping(address => uint256) public amountPerWallets;
+    address public stakingAddress = address(0);
+
+    struct HOLDINFO{
+        uint256 rewardLockup;
+        uint256 depositTime;
+    }
+    mapping(address => mapping(uint256 => HOLDINFO)) public holdInfo;
+    mapping(address => uint256) public genesisInfo;
+
+    IVRFv2SubscriptionManager public vrfRandomGenerator;
+
+    modifier onlyNotPaused() {
+        require(!paused, 'Contract is paused.');
+        _;
+    }
+
+    modifier onlyStakingContract() {
+        require(msg.sender == stakingAddress, 'Only Staking contract can call this function.');
+        _;
+    }
+
+    constructor(string memory _baseTokenURI, address _tropyAddress, address _vrfRandomGenerator) ERC1155(_baseTokenURI) {
+        baseTokenURI = _baseTokenURI;
+        tropyAddress = _tropyAddress;
+
+        vrfRandomGenerator = IVRFv2SubscriptionManager(_vrfRandomGenerator);
+    }
+
+    function name() public pure returns (string memory) {
+        return NAME;
+    }
+
+    function symbol() public pure returns (string memory) {
+        return SYMBOL;
+    }
+
+    function changeTropyAddress(address _tropyAddress) public onlyOwner {
+        tropyAddress = _tropyAddress;
+    }
+
+    function changeStakingAddress(address _stakingAddress) public onlyOwner {
+        stakingAddress = _stakingAddress;
+    }
+
+    function getRewardNum(address _account) public view returns(uint256) {
+        if (genesisInfo[_account] == 0) return 0;
+
+        uint256 rewardAmount = 0;
+        for(uint256 id = 1; id <= maxTokenID; id++) {
+            HOLDINFO memory info = holdInfo[_account][id];
+            rewardAmount = rewardAmount + info.rewardLockup + balanceOf(_account, id) * (block.timestamp - Math.max(genesisInfo[_account], info.depositTime)) * rewardRatePerDay / oneDay;
+        }
+
+        return rewardAmount;
+    }
+
+    function reSetRewardInfo(address _account) internal {
+        for(uint256 id = 1; id <= maxTokenID; id++) {
+            HOLDINFO storage info = holdInfo[_account][id];
+            info.rewardLockup = 0;
+            info.depositTime = block.timestamp;
+        }
+    }
+
+    // function claimReward(address _account) public returns (uint256) {
+    //     uint256 rewardAmount = 0;
+    //     for(uint256 id = 1; id <= maxTokenID; id++) {
+    //         HOLDINFO storage info = holdInfo[_account][id];
+    //         rewardAmount = rewardAmount + info.rewardLockup + balanceOf(_account, id) * (block.timestamp - Math.max(genesisInfo[_account], info.depositTime)) * rewardRatePerDay / oneDay;
+    //         info.rewardLockup = 0;
+    //         info.depositTime = (genesisInfo[_account] > 0) ? block.timestamp : 0;
+    //     }
+        
+    //     IERC20(tropyAddress).transfer(_account, rewardAmount);
+
+    //     return rewardAmount;
+    // }
+
+    function _beforeTokenTransfer(
+        address,
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory
+    ) internal virtual override {
+        for(uint256 i = 0; i < ids.length; i++) {
+            uint256 id = ids[i];
+            uint256 amount = amounts[i];
+
+            if(amount <= 0) continue;
+            
+            if(from != address(0) && balanceOf(from, id) > 0) {       
+                HOLDINFO storage fromInfo = holdInfo[from][id];
+                if (genesisInfo[from] != 0) {
+                    fromInfo.rewardLockup = fromInfo.rewardLockup + balanceOf(from, id) * (block.timestamp - Math.max(genesisInfo[from], fromInfo.depositTime)) * rewardRatePerDay / oneDay;
+                    fromInfo.depositTime = block.timestamp;
+                }
+            }
+
+            if(to != address(0)) {
+                HOLDINFO storage toInfo = holdInfo[to][id];
+                if (genesisInfo[to] != 0) {
+                    toInfo.rewardLockup = toInfo.rewardLockup + balanceOf(to, id) * (block.timestamp - Math.max(genesisInfo[to], toInfo.depositTime)) * rewardRatePerDay / oneDay;
+                    toInfo.depositTime = block.timestamp;
+                }
+            }            
+        }
+    }
+
+    function getInitTropyAmountToMint() public view returns (uint256) {
+        uint256 _initTropyAmountToMint = 90;
+        if(totalMinted < 2500) {
+            _initTropyAmountToMint = initTropyAmountToMint[0];
+        } else if(totalMinted < 5000) {
+            _initTropyAmountToMint = initTropyAmountToMint[1];
+        } else if(totalMinted < 7500) {
+            _initTropyAmountToMint = initTropyAmountToMint[2];
+        } else if(totalMinted < 10000) {
+            _initTropyAmountToMint = initTropyAmountToMint[3];
+        } else if(totalMinted < 12500) {
+            _initTropyAmountToMint = initTropyAmountToMint[4];
+        } else if(totalMinted < 15000) {
+            _initTropyAmountToMint = initTropyAmountToMint[5];
+        } else if(totalMinted < 17500) {
+            _initTropyAmountToMint = initTropyAmountToMint[6];
+        } else if(totalMinted <= 20000) {
+            _initTropyAmountToMint = initTropyAmountToMint[7];
+        }
+        return _initTropyAmountToMint * (10 ** 18);
+    }
+
+    function getTropyAmountToMint(address add, uint256 amount) public view returns (uint256) {
+        uint256 tropyAmount = 0;
+        uint256 _initTropyAmountToMint = getInitTropyAmountToMint();
+        uint256 amountFuture = amountPerWallets[add] + amount;
+
+        if(amountFuture <= 3) {
+            tropyAmount = _initTropyAmountToMint * amount;
+        } else {
+            uint256 addCount = 0;
+            if(amountPerWallets[add] == 0) {
+                tropyAmount = _initTropyAmountToMint * 2;
+                addCount = amount - 2;
+            }
+            else if(amountPerWallets[add] == 1) {
+                tropyAmount = _initTropyAmountToMint * 1;
+                addCount = amount - 1;
+            }
+            else if(amountPerWallets[add] == 2) {
+                addCount = amount;
+            } else {
+                addCount = amount;
+                _initTropyAmountToMint = _initTropyAmountToMint + (amountPerWallets[add] - 2) * 30 * (10 ** 18);
+            }
+            uint256 amountToAdd = (_initTropyAmountToMint * 2 + (addCount - 1) * 30 * (10 ** 18) ) * addCount / 2;
+            tropyAmount = tropyAmount + amountToAdd;
+        }
+        return tropyAmount;
+    }
+
+    function mint(uint256 amount) public onlyNotPaused {
+        uint256 tropyAmountToMint = getTropyAmountToMint(msg.sender, amount);
+        IERC20(tropyAddress).transferFrom(msg.sender, address(this), tropyAmountToMint);
+
+        for(uint256 i = 0; i < amount; i++) {
+            uint256 randomID = getRandomID();
+            supplies[uint8(randomID)] += 1;
+            _mint(msg.sender, randomID, 1, "");       
+        }
+    }
+
+    function _mint(
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) internal override {
+        require(totalMinted < maxSupply, "Suppy limit was hit");
+
+        amountPerWallets[to] += amount;
+        totalMinted += amount;
+        super._mint(to, id, amount, data);
+    }
+
+    function getRandomID() public returns(uint256) {
+        uint256 randomNum = vrfRandomGenerator.requestRandomWords();
+        randomNum = (randomNum & 0xFFFF);
+        uint256 randomID;
+        if(randomNum < 16384) randomID = 1;
+        else if(randomNum >= 16384 && randomNum < 32768) randomID = 2;
+        else if(randomNum >= 32768 && randomNum < 49152) randomID = 3;
+        else randomID = 4;
+
+        return randomID;
+    }
+
+    function burn(address from, uint256 id, uint256 amount) external {
+        _burn(from, id, amount);
+    }
+
+    function _baseURI() internal view virtual returns (string memory) {
+        return baseTokenURI;
+    }
+
+    function uri(uint256 tokenId) public view override returns (string memory) {
+        require(tokenId > 0 && tokenId <= maxTokenID, "ERC721Metadata: URI query for nonexistent token");
+
+        string memory baseExtension = ".json";
+        string memory currentBaseURI = _baseURI();
+        return
+            bytes(currentBaseURI).length > 0
+                ? string(
+                    abi.encodePacked(
+                        currentBaseURI,
+                        tokenId.toString(),
+                        baseExtension
+                    )
+                )
+                : "";
+    }
+
+    function setBaseURI(string memory baseURI) public onlyOwner {
+        baseTokenURI = baseURI;
+    }
+    
+    function setPrice(
+                uint256 _price1, uint256 _price2, uint256 _price3, uint256 _price4,
+                uint256 _price5, uint256 _price6, uint256 _price7, uint256 _price8
+                ) public onlyOwner {
+        initTropyAmountToMint[0] = _price1;
+        initTropyAmountToMint[1] = _price2;
+        initTropyAmountToMint[2] = _price3;
+        initTropyAmountToMint[3] = _price4;
+        initTropyAmountToMint[4] = _price5;
+        initTropyAmountToMint[5] = _price6;
+        initTropyAmountToMint[6] = _price7;
+        initTropyAmountToMint[7] = _price8;
+    }
+    
+    function pause(bool _state) public onlyOwner {
+        paused = _state;
+    }
+
+    function approve(address tokenAddress, address spender, uint256 amount) public onlyOwner returns (bool) {
+        IERC20(tokenAddress).approve(spender, amount);
+        return true;
+    }
+  
+    function withdraw() public payable onlyOwner {
+        require(payable(owner()).send(address(this).balance));
+    }
+
+    function recoverTropy() external onlyOwner {
+        uint256 tokenAmount = IERC20(tropyAddress).balanceOf(address(this));
+        IERC20(tropyAddress).transfer(this.owner(), tokenAmount);
+    }
+
+    function stakeGenesis(address _account) external onlyStakingContract {
+        genesisInfo[_account] = block.timestamp;
+        reSetRewardInfo(_account);
+    }
+
+    function unStakeGenesis(address _account) external onlyStakingContract {
+        genesisInfo[_account] = 0;
+        // claimReward(_account);
+    }
+
+    function harvest(address _account) external onlyStakingContract {
+        genesisInfo[_account] = block.timestamp;
+    }
+}

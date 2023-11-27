@@ -1,0 +1,1635 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x51faf53745810BDc39f458Fb56a8404c8B48f9D7",
+    "txHash": "0x76efda458bb32a4cc5c707b18ade371d1722a394af2df0568dee453359d4bad4"
+  },
+  "proxies": [
+    {
+      "address": "0x7A783f909c42bb13c6D35B8a85FfBEFc8Aa04A7a",
+      "txHash": "0x099d810cd10b2b0f8b580f74fd04a2b05fc425a3941b9a778425a251b2e06509",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x17156a2d002878F62A5218b8DDdF9ea4F77F6A83",
+      "txHash": "0x5786b5efe8fc75507b2ad36800a9dd5f1a373e850d6b19cf9909fd958077a924",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xB1840Ff2FcB048dE9B17C276c416e0eDD24735Df",
+      "txHash": "0x7285ce24c5f3ba90297756ee734bec8d83368a505fe0b2438dfbee0659aa0dd3",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x03272d7970e3D9bb023996530f465a152Beb39c7",
+      "txHash": "0x96082e28a17bb67afb60cbbcf62cb171cb46925c83d43e99cd410c28493a00c3",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "149ab997c80f40a8845526cc915c81735c815b5e0f939730c971a4c2fb0c05e4": {
+      "address": "0x1c0EbF4D2A08D463DB8eC61b6A4Fd0e988230316",
+      "txHash": "0xab78507d3f00e80735c7253055f59673cd105e71d58f0d2bf7264d88bbeebffd",
+      "layout": {
+        "solcVersion": "0.8.7",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "userListByDiscordName",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_mapping(t_string_memory_ptr,t_struct(UserInfo)12000_storage)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:54"
+          },
+          {
+            "label": "userListByAddress",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_mapping(t_address,t_struct(UserInfo)12000_storage)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:55"
+          },
+          {
+            "label": "depositToken",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_address",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:58"
+          },
+          {
+            "label": "userBalance",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:59"
+          },
+          {
+            "label": "cntTokenType",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:61"
+          },
+          {
+            "label": "tokenTypeList",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_mapping(t_uint256,t_address)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:62"
+          },
+          {
+            "label": "priceFeedList",
+            "offset": 0,
+            "slot": "107",
+            "type": "t_mapping(t_address,t_address)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:63"
+          },
+          {
+            "label": "cntTimeType",
+            "offset": 0,
+            "slot": "108",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:66"
+          },
+          {
+            "label": "betInfoBatch",
+            "offset": 0,
+            "slot": "109",
+            "type": "t_mapping(t_uint256,t_struct(BetInfoBatch)12041_storage)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:67"
+          },
+          {
+            "label": "revenueForCommunity",
+            "offset": 0,
+            "slot": "110",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:70"
+          },
+          {
+            "label": "teamAddress",
+            "offset": 0,
+            "slot": "111",
+            "type": "t_address",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:71"
+          },
+          {
+            "label": "cntCommunity",
+            "offset": 0,
+            "slot": "112",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:73"
+          },
+          {
+            "label": "cntTotalUser",
+            "offset": 0,
+            "slot": "113",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:74"
+          },
+          {
+            "label": "communityAddresses",
+            "offset": 0,
+            "slot": "114",
+            "type": "t_mapping(t_uint256,t_address)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:75"
+          },
+          {
+            "label": "userCountListForCommunity",
+            "offset": 0,
+            "slot": "115",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:76"
+          },
+          {
+            "label": "ratingListForCommunity",
+            "offset": 0,
+            "slot": "116",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:77"
+          },
+          {
+            "label": "isBettingKeeper",
+            "offset": 0,
+            "slot": "117",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:80"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(UserInfo)12000_storage)": {
+            "label": "mapping(address => struct BlueBet.UserInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_string_memory_ptr,t_struct(UserInfo)12000_storage)": {
+            "label": "mapping(string => struct BlueBet.UserInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "label": "mapping(uint256 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(BetInfo)12023_storage)": {
+            "label": "mapping(uint256 => struct BlueBet.BetInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(BetInfoBatch)12041_storage)": {
+            "label": "mapping(uint256 => struct BlueBet.BetInfoBatch)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(BetInfo)12023_storage": {
+            "label": "struct BlueBet.BetInfo",
+            "members": [
+              {
+                "label": "cntUsers",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "bettedUserAddresses",
+                "type": "t_mapping(t_uint256,t_address)",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "bettedPrices",
+                "type": "t_mapping(t_uint256,t_uint256)",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "poolAmount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "cntWinners",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "winners",
+                "type": "t_mapping(t_uint256,t_address)",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "winAmounts",
+                "type": "t_mapping(t_uint256,t_uint256)",
+                "offset": 0,
+                "slot": "6"
+              }
+            ],
+            "numberOfBytes": "224"
+          },
+          "t_struct(BetInfoBatch)12041_storage": {
+            "label": "struct BlueBet.BetInfoBatch",
+            "members": [
+              {
+                "label": "timeType",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "period",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "periodToDeposit",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "bettingAmount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "startedTime",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "status",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "betInfoByToken",
+                "type": "t_mapping(t_uint256,t_struct(BetInfo)12023_storage)",
+                "offset": 0,
+                "slot": "6"
+              }
+            ],
+            "numberOfBytes": "224"
+          },
+          "t_struct(UserInfo)12000_storage": {
+            "label": "struct BlueBet.UserInfo",
+            "members": [
+              {
+                "label": "account",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "discordName",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "communityId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "isRegistered",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {}
+      }
+    },
+    "d95bed9a09f2ab0815aa0afb315322a2d854d807d7b22d29ab8b804888c58102": {
+      "address": "0xEc5C5Ce69380C36a6d71BE55B397De862fF67Ee6",
+      "txHash": "0x62a4212cb3c756a5024688d5640d1081df912b00ad0393942a3753d9d60ac1c4",
+      "layout": {
+        "solcVersion": "0.8.7",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "userListByDiscordName",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_mapping(t_string_memory_ptr,t_struct(UserInfo)1700_storage)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:54"
+          },
+          {
+            "label": "userListByAddress",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_mapping(t_address,t_struct(UserInfo)1700_storage)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:55"
+          },
+          {
+            "label": "depositToken",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_address",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:58"
+          },
+          {
+            "label": "userBalance",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:59"
+          },
+          {
+            "label": "cntTokenType",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:61"
+          },
+          {
+            "label": "tokenTypeList",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_mapping(t_uint256,t_address)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:62"
+          },
+          {
+            "label": "priceFeedList",
+            "offset": 0,
+            "slot": "107",
+            "type": "t_mapping(t_address,t_address)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:63"
+          },
+          {
+            "label": "cntTimeType",
+            "offset": 0,
+            "slot": "108",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:66"
+          },
+          {
+            "label": "betInfoBatch",
+            "offset": 0,
+            "slot": "109",
+            "type": "t_mapping(t_uint256,t_struct(BetInfoBatch)1741_storage)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:67"
+          },
+          {
+            "label": "revenueForCommunity",
+            "offset": 0,
+            "slot": "110",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:70"
+          },
+          {
+            "label": "teamAddress",
+            "offset": 0,
+            "slot": "111",
+            "type": "t_address",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:71"
+          },
+          {
+            "label": "cntCommunity",
+            "offset": 0,
+            "slot": "112",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:73"
+          },
+          {
+            "label": "cntTotalUser",
+            "offset": 0,
+            "slot": "113",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:74"
+          },
+          {
+            "label": "communityAddresses",
+            "offset": 0,
+            "slot": "114",
+            "type": "t_mapping(t_uint256,t_address)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:75"
+          },
+          {
+            "label": "userCountListForCommunity",
+            "offset": 0,
+            "slot": "115",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:76"
+          },
+          {
+            "label": "ratingListForCommunity",
+            "offset": 0,
+            "slot": "116",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:77"
+          },
+          {
+            "label": "isBettingKeeper",
+            "offset": 0,
+            "slot": "117",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:80"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(UserInfo)1700_storage)": {
+            "label": "mapping(address => struct BlueBet.UserInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_string_memory_ptr,t_struct(UserInfo)1700_storage)": {
+            "label": "mapping(string => struct BlueBet.UserInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "label": "mapping(uint256 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(BetInfo)1723_storage)": {
+            "label": "mapping(uint256 => struct BlueBet.BetInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(BetInfoBatch)1741_storage)": {
+            "label": "mapping(uint256 => struct BlueBet.BetInfoBatch)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(BetInfo)1723_storage": {
+            "label": "struct BlueBet.BetInfo",
+            "members": [
+              {
+                "label": "cntUsers",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "bettedUserAddresses",
+                "type": "t_mapping(t_uint256,t_address)",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "bettedPrices",
+                "type": "t_mapping(t_uint256,t_uint256)",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "poolAmount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "cntWinners",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "winners",
+                "type": "t_mapping(t_uint256,t_address)",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "winAmounts",
+                "type": "t_mapping(t_uint256,t_uint256)",
+                "offset": 0,
+                "slot": "6"
+              }
+            ],
+            "numberOfBytes": "224"
+          },
+          "t_struct(BetInfoBatch)1741_storage": {
+            "label": "struct BlueBet.BetInfoBatch",
+            "members": [
+              {
+                "label": "timeType",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "period",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "periodToDeposit",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "bettingAmount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "startedTime",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "status",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "betInfoByToken",
+                "type": "t_mapping(t_uint256,t_struct(BetInfo)1723_storage)",
+                "offset": 0,
+                "slot": "6"
+              }
+            ],
+            "numberOfBytes": "224"
+          },
+          "t_struct(UserInfo)1700_storage": {
+            "label": "struct BlueBet.UserInfo",
+            "members": [
+              {
+                "label": "account",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "discordName",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "communityId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "isRegistered",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {}
+      }
+    },
+    "55ea896d28f5eef03a5fb26a77943636855c8cab589750f9fbb729c7cbf95b89": {
+      "address": "0xfcC7782AA437a8ae71B56fc5894fC96063e34E88",
+      "txHash": "0x7a5fe341002dff07e266d058bbe8340bf55d57bced74dc07e3637d091695970c",
+      "layout": {
+        "solcVersion": "0.8.7",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "MAX_TIME_TYPE",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:20"
+          },
+          {
+            "label": "MAX_TOKEN_TYPE",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:21"
+          },
+          {
+            "label": "MAX_AMOUNT_TYPE",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:22"
+          },
+          {
+            "label": "userListByDiscordName",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_mapping(t_string_memory_ptr,t_struct(UserInfo)1706_storage)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:58"
+          },
+          {
+            "label": "userListByAddress",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_mapping(t_address,t_struct(UserInfo)1706_storage)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:59"
+          },
+          {
+            "label": "depositToken",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_address",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:62"
+          },
+          {
+            "label": "userBalance",
+            "offset": 0,
+            "slot": "107",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:63"
+          },
+          {
+            "label": "cntTokenType",
+            "offset": 0,
+            "slot": "108",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:65"
+          },
+          {
+            "label": "tokenTypeList",
+            "offset": 0,
+            "slot": "109",
+            "type": "t_mapping(t_uint256,t_address)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:66"
+          },
+          {
+            "label": "priceFeedList",
+            "offset": 0,
+            "slot": "110",
+            "type": "t_mapping(t_address,t_address)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:67"
+          },
+          {
+            "label": "cntAmountType",
+            "offset": 0,
+            "slot": "111",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:69"
+          },
+          {
+            "label": "cntTimeType",
+            "offset": 0,
+            "slot": "112",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:72"
+          },
+          {
+            "label": "betInfoBatch",
+            "offset": 0,
+            "slot": "113",
+            "type": "t_mapping(t_uint256,t_struct(BetInfoBatch)1749_storage)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:73"
+          },
+          {
+            "label": "revenueForCommunity",
+            "offset": 0,
+            "slot": "114",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:76"
+          },
+          {
+            "label": "teamAddress",
+            "offset": 0,
+            "slot": "115",
+            "type": "t_address",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:77"
+          },
+          {
+            "label": "cntCommunity",
+            "offset": 0,
+            "slot": "116",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:79"
+          },
+          {
+            "label": "cntTotalUser",
+            "offset": 0,
+            "slot": "117",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:80"
+          },
+          {
+            "label": "communityAddresses",
+            "offset": 0,
+            "slot": "118",
+            "type": "t_mapping(t_uint256,t_address)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:81"
+          },
+          {
+            "label": "userCountListForCommunity",
+            "offset": 0,
+            "slot": "119",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:82"
+          },
+          {
+            "label": "ratingListForCommunity",
+            "offset": 0,
+            "slot": "120",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:83"
+          },
+          {
+            "label": "isBettingKeeper",
+            "offset": 0,
+            "slot": "121",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:86"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_array(t_struct(BetInfo)1731_storage)15_storage)5_storage": {
+            "label": "struct BlueBet.BetInfo[15][5]",
+            "numberOfBytes": "19200"
+          },
+          "t_array(t_struct(BetInfo)1731_storage)15_storage": {
+            "label": "struct BlueBet.BetInfo[15]",
+            "numberOfBytes": "3840"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(UserInfo)1706_storage)": {
+            "label": "mapping(address => struct BlueBet.UserInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_string_memory_ptr,t_struct(UserInfo)1706_storage)": {
+            "label": "mapping(string => struct BlueBet.UserInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "label": "mapping(uint256 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(BetInfoBatch)1749_storage)": {
+            "label": "mapping(uint256 => struct BlueBet.BetInfoBatch)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(BetInfo)1731_storage": {
+            "label": "struct BlueBet.BetInfo",
+            "members": [
+              {
+                "label": "bettingAmount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "cntUsers",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "bettedUserAddresses",
+                "type": "t_mapping(t_uint256,t_address)",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "bettedPrices",
+                "type": "t_mapping(t_uint256,t_uint256)",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "poolAmount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "cntWinners",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "winners",
+                "type": "t_mapping(t_uint256,t_address)",
+                "offset": 0,
+                "slot": "6"
+              },
+              {
+                "label": "winAmounts",
+                "type": "t_mapping(t_uint256,t_uint256)",
+                "offset": 0,
+                "slot": "7"
+              }
+            ],
+            "numberOfBytes": "256"
+          },
+          "t_struct(BetInfoBatch)1749_storage": {
+            "label": "struct BlueBet.BetInfoBatch",
+            "members": [
+              {
+                "label": "timeType",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "period",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "periodToDeposit",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "startedTime",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "status",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "betInfo",
+                "type": "t_array(t_array(t_struct(BetInfo)1731_storage)15_storage)5_storage",
+                "offset": 0,
+                "slot": "5"
+              }
+            ],
+            "numberOfBytes": "19360"
+          },
+          "t_struct(UserInfo)1706_storage": {
+            "label": "struct BlueBet.UserInfo",
+            "members": [
+              {
+                "label": "account",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "discordName",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "communityId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "isRegistered",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {}
+      }
+    },
+    "0ebd6badd9560e6988fdba92d37e540ed626a6d63ab496ad6072be556d0521cf": {
+      "address": "0xfbF981a9b396EBd22c0d4b51E07905557a405363",
+      "txHash": "0x93325a87d03da003596f7b838aa1b4ac2361cfa51bb583957c16ae332f2908ca",
+      "layout": {
+        "solcVersion": "0.8.7",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "MAX_TIME_TYPE",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:20"
+          },
+          {
+            "label": "MAX_TOKEN_TYPE",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:21"
+          },
+          {
+            "label": "MAX_AMOUNT_TYPE",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:22"
+          },
+          {
+            "label": "userListByDiscordName",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_mapping(t_string_memory_ptr,t_struct(UserInfo)1706_storage)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:58"
+          },
+          {
+            "label": "userListByAddress",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_mapping(t_address,t_struct(UserInfo)1706_storage)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:59"
+          },
+          {
+            "label": "depositToken",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_address",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:62"
+          },
+          {
+            "label": "userBalance",
+            "offset": 0,
+            "slot": "107",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:63"
+          },
+          {
+            "label": "cntTokenType",
+            "offset": 0,
+            "slot": "108",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:65"
+          },
+          {
+            "label": "tokenTypeList",
+            "offset": 0,
+            "slot": "109",
+            "type": "t_mapping(t_uint256,t_address)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:66"
+          },
+          {
+            "label": "priceFeedList",
+            "offset": 0,
+            "slot": "110",
+            "type": "t_mapping(t_address,t_address)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:67"
+          },
+          {
+            "label": "cntAmountType",
+            "offset": 0,
+            "slot": "111",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:69"
+          },
+          {
+            "label": "cntTimeType",
+            "offset": 0,
+            "slot": "112",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:72"
+          },
+          {
+            "label": "betInfoBatch",
+            "offset": 0,
+            "slot": "113",
+            "type": "t_mapping(t_uint256,t_struct(BetInfoBatch)1749_storage)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:73"
+          },
+          {
+            "label": "revenueForCommunity",
+            "offset": 0,
+            "slot": "114",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:76"
+          },
+          {
+            "label": "teamAddress",
+            "offset": 0,
+            "slot": "115",
+            "type": "t_address",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:77"
+          },
+          {
+            "label": "cntCommunity",
+            "offset": 0,
+            "slot": "116",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:79"
+          },
+          {
+            "label": "cntTotalUser",
+            "offset": 0,
+            "slot": "117",
+            "type": "t_uint256",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:80"
+          },
+          {
+            "label": "communityAddresses",
+            "offset": 0,
+            "slot": "118",
+            "type": "t_mapping(t_uint256,t_address)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:81"
+          },
+          {
+            "label": "userCountListForCommunity",
+            "offset": 0,
+            "slot": "119",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:82"
+          },
+          {
+            "label": "ratingListForCommunity",
+            "offset": 0,
+            "slot": "120",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:83"
+          },
+          {
+            "label": "isBettingKeeper",
+            "offset": 0,
+            "slot": "121",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "BlueBet",
+            "src": "contracts\\BlueBet\\BlueBet.sol:86"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_array(t_struct(BetInfo)1731_storage)15_storage)5_storage": {
+            "label": "struct BlueBet.BetInfo[15][5]",
+            "numberOfBytes": "19200"
+          },
+          "t_array(t_struct(BetInfo)1731_storage)15_storage": {
+            "label": "struct BlueBet.BetInfo[15]",
+            "numberOfBytes": "3840"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(UserInfo)1706_storage)": {
+            "label": "mapping(address => struct BlueBet.UserInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_string_memory_ptr,t_struct(UserInfo)1706_storage)": {
+            "label": "mapping(string => struct BlueBet.UserInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "label": "mapping(uint256 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(BetInfoBatch)1749_storage)": {
+            "label": "mapping(uint256 => struct BlueBet.BetInfoBatch)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(BetInfo)1731_storage": {
+            "label": "struct BlueBet.BetInfo",
+            "members": [
+              {
+                "label": "bettingAmount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "cntUsers",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "bettedUserAddresses",
+                "type": "t_mapping(t_uint256,t_address)",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "bettedPrices",
+                "type": "t_mapping(t_uint256,t_uint256)",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "poolAmount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "cntWinners",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "winners",
+                "type": "t_mapping(t_uint256,t_address)",
+                "offset": 0,
+                "slot": "6"
+              },
+              {
+                "label": "winAmounts",
+                "type": "t_mapping(t_uint256,t_uint256)",
+                "offset": 0,
+                "slot": "7"
+              }
+            ],
+            "numberOfBytes": "256"
+          },
+          "t_struct(BetInfoBatch)1749_storage": {
+            "label": "struct BlueBet.BetInfoBatch",
+            "members": [
+              {
+                "label": "timeType",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "period",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "periodToDeposit",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "startedTime",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "status",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "betInfo",
+                "type": "t_array(t_array(t_struct(BetInfo)1731_storage)15_storage)5_storage",
+                "offset": 0,
+                "slot": "5"
+              }
+            ],
+            "numberOfBytes": "19360"
+          },
+          "t_struct(UserInfo)1706_storage": {
+            "label": "struct BlueBet.UserInfo",
+            "members": [
+              {
+                "label": "account",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "discordName",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "communityId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "isRegistered",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {}
+      }
+    }
+  }
+}

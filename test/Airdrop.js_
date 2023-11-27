@@ -1,0 +1,283 @@
+const { expect } = require("chai");
+const { ethers, network } = require("hardhat");
+// const { time } = require('openzeppelin-test-helpers');
+const assert = require('assert').strict;
+const provider = waffle.provider;
+
+require("@nomiclabs/hardhat-ethers");
+
+describe("Test Token", async function () {
+    let shatteredOrbs, airdrop;
+    let owner, accounts;
+    before(async () => {
+    console.log("aaaaaaaaaaaaaaa")
+        [owner] = await ethers.getSigners();
+console.log("owner address", owner.address)
+
+
+        const ShatteredOrbs = await ethers.getContractFactory("ShatteredOrbs");
+        shatteredOrbs = await ShatteredOrbs.deploy();
+        await shatteredOrbs.deployed();
+        console.log("shatteredOrbs address: ", shatteredOrbs.address);
+
+
+        const Airdrop = await ethers.getContractFactory("Airdrop");
+        airdrop = await Airdrop.deploy(shatteredOrbs.address);
+        await airdrop.deployed();
+        console.log("airdrop address: ", airdrop.address);
+
+
+        // const MetropyToken = await ethers.getContractFactory("MetropyToken");
+        // metropyToken = await MetropyToken.deploy(1000000000);
+        // await metropyToken.deployed();
+        // console.log("MetropyToken address: ", metropyToken.address);
+
+        // const Genesis = await ethers.getContractFactory("Genesis");
+        // genesis = await Genesis.deploy();
+        // await genesis.deployed();
+        // console.log("Genesis address: ", genesis.address);
+
+        // const rand = process.env.PRIVATE_KEY;
+        // const VRFGenerator = await ethers.getContractFactory("VRFv2SubscriptionManager");
+        // vrfGenerator = await VRFGenerator.deploy(rand);
+        // await vrfGenerator.deployed();
+        // console.log("VRFGenerator address: ", vrfGenerator.address);
+
+        // const Obelisk = await ethers.getContractFactory("Obelisk");
+        // obelisk = await Obelisk.deploy("", metropyToken.address, vrfGenerator.address); // random function address
+        // await obelisk.deployed();
+        // console.log("Obelisk address: ", obelisk.address);
+
+        // const Land = await ethers.getContractFactory("Land");
+        // land = await Land.deploy("", metropyToken.address, obelisk.address, vrfGenerator.address);
+        // await land.deployed();
+        // console.log("Land address: ", land.address);
+
+        // const Staking = await ethers.getContractFactory("StakeToken");
+        // staking = await Staking.deploy(metropyToken.address, genesis.address, owner.address, land.address, obelisk.address);
+        // await staking.deployed();
+        // console.log("Staking address: ", staking.address);
+
+        // // preprocessing...........
+        // await genesis.pause(false);
+        // await obelisk.pause(false);
+        // await land.pause(false);
+        // await metropyToken.transfer(staking.address, ethers.utils.parseEther("1000000"));
+        // await obelisk.changeStakingAddress(staking.address);
+        // await land.changeStakingAddress(staking.address);
+
+        // await genesis.setPublicSale();
+        // await genesis.revealToken();
+    });
+    
+    // it("Random function check", async function () {
+    //     console.log("Owner balance: ", await metropyToken.balanceOf(owner.address));
+    //     console.log("Random Number1: ", await vrfGenerator.random(0));
+    //     // const abc = await vrfGenerator.requestRandomWords();
+    //     // console.log("Random Number2: ", abc);
+    //     // await obelisk.getRandomID();
+    // });
+
+    // it("users can mint NFT and stake them", async function() {
+        
+    //     await genesis.connect(accounts[0]).mint(["0xfbffd63a60374a31aa9811cbc80b577e23925a5874e86a17f712bab874f33ac9"], accounts[0].address, {value: ethers.utils.parseEther("0.075")});
+    //     console.log("Genesis balance of account0:", await genesis.balanceOf(accounts[0].address));
+
+    //     let tokenId = 1;
+    //     let kindNFT = [1, 0, 0, 0, 0, 0, 0, 0];
+
+    //     await genesis.connect(accounts[0]).approve(staking.address, tokenId);
+    //     await staking.connect(accounts[0]).stakeTokens([tokenId], kindNFT);
+    //     console.log("Staking token acount of account0: ", await staking.balanceOf(accounts[0].address));
+
+    //     await network.provider.send("evm_increaseTime", [600]);
+    //     await network.provider.send("evm_mine");
+
+    //     await network.provider.send("evm_increaseTime", [600]);
+    //     await network.provider.send("evm_mine");
+
+    //     await staking.connect(accounts[0]).unstakeTokens(true);
+
+    //     console.log("metro balance: ", await metropyToken.balanceOf(accounts[0].address));
+    // });
+
+    // // it("Users can mint Obelisk and Land by using metropyToken", async function() {
+    // //     await metropyToken.transfer(accounts[0].address, ethers.utils.parseEther("3000"));
+    // //     await metropyToken.transfer(accounts[1].address, ethers.utils.parseEther("3000"));
+
+    // //     await metropyToken.connect(accounts[0]).approve(obelisk.address, ethers.utils.parseEther("1740"));
+    // //     await obelisk.connect(accounts[0]).mint(10);
+        
+    // //     const id = 0;
+    // //     await metropyToken.connect(accounts[0]).approve(land.address, ethers.utils.parseEther("1000"));
+    // //     await land.connect(accounts[0]).mint(id, 1);
+
+    // //     await network.provider.send("evm_increaseTime", [86400]);
+    // //     await network.provider.send("evm_mine");
+    // //     console.log("Obelisk Reward: ", await obelisk.connect(accounts[0]).getRewardNum(accounts[0].address));
+    // //     console.log("Land Reward: ", await land.connect(accounts[0]).getRewardNum(accounts[0].address));
+    // // });
+
+    // it("Users can mint Obelisk and Land by using metropyToken", async function() {
+
+
+    //     let tokenId = 1;
+    //     let kindNFT = [1, 0, 0, 0, 0, 0, 0, 0];
+
+    //     await genesis.connect(accounts[0]).approve(staking.address, tokenId);
+    //     await staking.connect(accounts[0]).stakeTokens([tokenId], kindNFT);
+
+    //     await metropyToken.transfer(accounts[0].address, ethers.utils.parseEther("3000"));
+    //     await metropyToken.transfer(accounts[1].address, ethers.utils.parseEther("3000"));
+
+    //     await metropyToken.connect(accounts[0]).approve(obelisk.address, ethers.utils.parseEther("1740"));
+    //     await obelisk.connect(accounts[0]).mint(10);
+
+    //     await network.provider.send("evm_increaseTime", [600]);
+    //     await network.provider.send("evm_mine");
+
+    //     console.log("Obelisk Reward: ", await obelisk.getRewardNum(accounts[0].address));
+    //     console.log("calcHarvestNumFormOther: ", await staking.calcHarvestNumFormOther(accounts[0].address));
+    //     console.log("calcHarvestTot: ", await staking.calcHarvestTot(accounts[0].address));
+        
+    //     // await staking.connect(accounts[0]).unstakeTokens(true);
+    //     // console.log(await metropyToken.balanceOf(accounts[0].address));
+    //     // console.log("Obelisk Reward: ", await obelisk.getRewardNum(accounts[0].address));
+
+    //     // const id = 0;
+    //     // await metropyToken.connect(accounts[0]).approve(land.address, ethers.utils.parseEther("1000"));
+    //     // await land.connect(accounts[0]).mint(id, 1);
+
+    //     // await network.provider.send("evm_increaseTime", [86400]);
+    //     // await network.provider.send("evm_mine");
+    //     // console.log("Obelisk Reward: ", await obelisk.connect(accounts[0]).getRewardNum(accounts[0].address));
+    //     // console.log("Land Reward: ", await land.connect(accounts[0]).getRewardNum(accounts[0].address));
+    // });
+
+    // it("Manager can get staking Info using tokenId", async function() {
+    //     const tokenId = 101;
+    //     // await lord.setPaused(true);
+    //     await genesis.connect(account2).approve(lord.address, tokenId);
+    //     console.log("Before staking, Stake Info: ", await lord.getStakeIdInfo(tokenId));
+    //     await expect(lord.connect(account2).addManyToStageAndPoliceOffice(account2.address, [tokenId], [0])).to.not.be.reverted;
+    //     console.log("After staking, Stake Info: ", await lord.getStakeIdInfo(tokenId));
+    // });
+
+    // it("Users can get reward using staking", async function() {
+    //     // console.log("Token count of Account2: ", await genesis.balanceOf(account2.address));
+
+    //     const tokenIds = [9, 10];
+    //     // await expect(await genesis.ownerOf(tokenIds[0])).to.equal(account2.address);
+
+    //     await genesis.connect(accounts[0]).approve(lord.address, tokenIds[0]);
+    //     await genesis.connect(accounts[0]).approve(lord.address, tokenIds[1]);
+    //     await lord.connect(accounts[0]).addManyToLord(accounts[0].address, tokenIds);
+    //     console.log("accounts[0] staked their 1 NFT to the Bank");
+
+    //     // // console.log("Staking Info of accounts[0]: ", await lord.getStakeUserInfo(accounts[0].address));
+
+    //     await network.provider.send("evm_increaseTime", [3 * 86400]);
+    //     await network.provider.send("evm_mine");
+        
+    //     console.log("staking info: ", await lord.getStakeUserInfo(accounts[0].address));
+    //     console.log("Token staking Info: ", await lord.getStakeIdInfo(5));
+
+    //     // await genesis.addAdmin(lord.address);
+    //     // console.log("Reward Calculationg: ", await lord.connect(owner).calculateRewards(tokenIds[0]));
+
+    //     // await metropyToken.addAdmin(lord.address);
+    //     const unStake = false;
+
+    //     console.log("Before claim, the Money token balance of accounts[0]: ", await metropyToken.balanceOf(accounts[0].address));
+
+    //     await lord.connect(accounts[0]).claimManyFromLord([tokenIds[0]], unStake, false, false);
+        
+    //     await network.provider.send("evm_increaseTime", [10]);
+    //     await network.provider.send("evm_mine");
+
+    //     console.log("After claim, the Money token balance of accounts[0]: ", await metropyToken.balanceOf(accounts[0].address));
+        
+        
+    //     // await lord.connect(accounts[0]).buyPortions(1);
+    //     console.log("Before buy, remain shields: ", await genesis.remainShields());
+    //     await genesis.connect(accounts[0]).buyShields(1);
+    //     console.log("After buy, remain shields: ", await genesis.remainShields());
+    //     console.log("After buying portions: ", await metropyToken.balanceOf(accounts[0].address));
+
+    //     console.log("Merchant Info: ", await lord.merchants(accounts[0].address));
+
+    //     const saleTokenId = 1;
+
+    //     // await genesis.connect(accounts[0]).approve(market.address, saleTokenId);
+    //     // await market.connect(accounts[0]).createSale(saleTokenId, ethers.utils.parseEther("0"));
+    //     // console.log(await genesis.ownerOf(saleTokenId));
+
+    //     // await metropyToken.connect(accounts[1]).approve(market.address, ethers.utils.parseEther("100"));
+    //     // await market.connect(accounts[1]).placeBid(saleTokenId, ethers.utils.parseEther("2"));
+    //     // console.log("Sale Token Info: ", await market.getSaleInfo(saleTokenId));
+
+    //     // await metropyToken.connect(accounts[2]).approve(market.address, ethers.utils.parseEther("100"));
+    //     // await expect(market.connect(accounts[2]).placeBid(saleTokenId, ethers.utils.parseEther("2"))).to.be.reverted;
+    //     // await market.connect(accounts[2]).placeBid(saleTokenId, ethers.utils.parseEther("3"));
+    //     // console.log("Sale Token Info: ", await market.getSaleInfo(saleTokenId));
+
+    //     // // await market.connect(accounts[0]).performBid(saleTokenId);
+    //     // await market.connect(accounts[0]).destroySale(saleTokenId);
+
+    //     // console.log("Sale Token Info: ", await market.getSaleInfo(saleTokenId));
+
+    // });
+
+    // it ("User can generate dirty cop NFT using 3 robber NFTs with 50% chance.", async function() {
+    //     const nftCountOfOwner = await genesis.balanceOf(owner.address);
+    //     const tokenIds = [], lordTypes = [];
+    //     for (let i = 0; i < nftCountOfOwner; i++) {
+    //         tokenIds.push(await genesis.tokenOfOwnerByIndex(owner.address, i));
+    //         lordTypes.push(0);
+    //     }
+
+    //     await lord.connect(owner).addManyToStageAndPoliceOffice(owner.address, tokenIds, lordTypes);
+
+    //     let robberTokenIds = [];
+    //     const nftCounts = await genesis.balanceOf(account2.address);
+    //     console.log("NFTs of account2: ", nftCounts);
+    //     for (let i = 0; i < nftCounts; i++) {
+    //         if (robberTokenIds.length == 3) break;
+
+    //         let currentId = await genesis.tokenOfOwnerByIndex(account2.address, i);
+
+    //         if (await genesis.isRobber(currentId)) {
+    //             robberTokenIds.push(currentId);
+    //         }
+    //     }
+
+    //     await genesis.connect(account2).mintDirtyCop(robberTokenIds);
+        
+    //     const nftCounts2 = await genesis.balanceOf(account2.address);
+    //     if (nftCounts < nftCounts2) {
+    //         console.log("Dirty cop generation success, current nfts:", nftCounts2);
+    //     } else {
+    //         console.log("Dirty cop generation fail, current nfts:", nftCounts2);
+    //     }
+    // });
+
+    //     console.log("selected NFT: ", tokenIds[0], tokenIds[1],tokenIds[2]);
+
+    //     await network.provider.send("evm_increaseTime", [10]);
+    //     await network.provider.send("evm_mine");
+
+    //     console.log("Before mint, Owner of", tokenIds[0], "NFT:", await genesis.ownerOf(tokenIds[0]));
+
+    //     await genesis.connect(account2).mintDirtyCop(tokenIds);
+
+    //     // if (await genesis.connect(account2).mintDirtyCop(tokenIds) == true) {
+    //     //     console.log("success");
+    //     // } else {
+    //     //     console.log("false");
+    //     // }
+
+    //     console.log("After mint, Owner of", tokenIds[0], "NFT:", await genesis.ownerOf(tokenIds[0]));
+    //     // console.log("After mint, Owner of", 111, "NFT:", await genesis.ownerOf(109));
+    // });
+
+});

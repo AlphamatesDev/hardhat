@@ -1,0 +1,96 @@
+const { expect } = require("chai");
+const { ethers, network } = require("hardhat");
+const { MerkleTree } = require('merkletreejs');
+const keccak256 = require('keccak256');
+// const { time } = require('openzeppelin-test-helpers');
+const assert = require('assert').strict;
+const provider = waffle.provider;
+
+require("@nomiclabs/hardhat-ethers");
+
+describe("Test Token", async function () {
+    let owner, accounts;
+    let metaarabs;
+    before(async () => {
+        [owner, ...accounts] = await ethers.getSigners();
+
+        const TokenTransfer = await ethers.getContractFactory("TokenTransfer");
+        tokenTransfer = await TokenTransfer.deploy();
+        await tokenTransfer.deployed();
+        console.log("tokenTransfer address: ", tokenTransfer.address);
+
+        const MetropyToken = await ethers.getContractFactory("MetropyToken");
+        metropyToken = await MetropyToken.deploy(10000);
+        await metropyToken.deployed();
+        console.log("metropyToken address: ", metropyToken.address);
+
+        const MetropyToken1 = await ethers.getContractFactory("MetropyToken1");
+        metropyToken1 = await MetropyToken1.deploy(10000);
+        await metropyToken1.deployed();
+        console.log("metropyToken1 address: ", metropyToken1.address);
+
+        const ERC721Standard = await ethers.getContractFactory("ERC721Standard");
+        nftStandard = await ERC721Standard.deploy();
+        await nftStandard.deployed();
+        console.log("nftStandard address: ", nftStandard.address);
+
+        const ERC721Standard1 = await ethers.getContractFactory("ERC721Standard1");
+        nftStandard1 = await ERC721Standard1.deploy();
+        await nftStandard1.deployed();
+        console.log("nftStandard1 address: ", nftStandard1.address);
+
+        await nftStandard.mint(3);
+        await nftStandard1.mint(3);
+    });
+    
+    // it("Can tranfer ERC20 Tokens", async function () {
+    //     console.log("owner metropyToken balance: ", await metropyToken.balanceOf(owner.address));
+    //     console.log("owner metropyToken1 balance: ", await metropyToken1.balanceOf(owner.address));
+    //     await metropyToken.connect(owner).approve(tokenTransfer.address, ethers.utils.parseEther("9000000000000000000000000000000"));
+    //     await metropyToken1.connect(owner).approve(tokenTransfer.address, ethers.utils.parseEther("9000000000000000000000000000000"));
+    //     const addrList = [metropyToken.address, metropyToken1.address];
+    //     await tokenTransfer.connect(owner).transferERC20(accounts[1].address, addrList);
+    //     console.log("owner metropyToken balance: ", await metropyToken.balanceOf(owner.address));
+    //     console.log("owner metropyToken1 balance: ", await metropyToken1.balanceOf(owner.address));
+    //     console.log("account1 metropyToken balance: ", await metropyToken.balanceOf(accounts[1].address));
+    //     console.log("account1 metropyToken1 balance: ", await metropyToken1.balanceOf(accounts[1].address));
+    // });
+
+    // it("Can tranfer ERC721 Tokens", async function () {
+    //     console.log("owner nftStandard balance: ", await nftStandard.balanceOf(owner.address));
+    //     console.log("owner nftStandard1 balance: ", await nftStandard1.balanceOf(owner.address));
+    //     await nftStandard.connect(owner).setApprovalForAll(tokenTransfer.address, true);
+    //     await nftStandard1.connect(owner).setApprovalForAll(tokenTransfer.address, true);
+    //     const addrList = [nftStandard.address, nftStandard1.address];
+    //     const idLists = [1, 1];
+    //     await tokenTransfer.connect(owner).transferERC721(accounts[1].address, addrList, idLists);
+    //     console.log("owner nftStandard balance: ", await nftStandard.balanceOf(owner.address));
+    //     console.log("owner nftStandard1 balance: ", await nftStandard1.balanceOf(owner.address));
+    //     console.log("account1 nftStandard balance: ", await nftStandard.balanceOf(accounts[1].address));
+    //     console.log("account1 nftStandard1 balance: ", await nftStandard1.balanceOf(accounts[1].address));
+    // });
+
+    it("Can tranfer ERC721&ERC20&ETH Tokens", async function () {
+        console.log("owner metropyToken balance: ", await metropyToken.balanceOf(owner.address));
+        console.log("owner metropyToken1 balance: ", await metropyToken1.balanceOf(owner.address));
+        await metropyToken.connect(owner).approve(tokenTransfer.address, ethers.utils.parseEther("9000000000000000000000000000000"));
+        await metropyToken1.connect(owner).approve(tokenTransfer.address, ethers.utils.parseEther("9000000000000000000000000000000"));
+        const erc20addrList = [metropyToken.address, metropyToken1.address];
+        await nftStandard.connect(owner).setApprovalForAll(tokenTransfer.address, true);
+        await nftStandard1.connect(owner).setApprovalForAll(tokenTransfer.address, true);
+        const erc721addrList = [nftStandard.address, nftStandard1.address];
+        const idLists = [1, 1];
+        await tokenTransfer.transferAll(accounts[1].address, erc20addrList, erc721addrList, idLists, {value: ethers.utils.parseEther("0.1")});
+        console.log("owner metropyToken balance: ", await metropyToken.balanceOf(owner.address));
+        console.log("owner metropyToken1 balance: ", await metropyToken1.balanceOf(owner.address));
+        console.log("account1 metropyToken balance: ", await metropyToken.balanceOf(accounts[1].address));
+        console.log("account1 metropyToken1 balance: ", await metropyToken1.balanceOf(accounts[1].address));
+
+        console.log("owner nftStandard balance: ", await nftStandard.balanceOf(owner.address));
+        console.log("owner nftStandard1 balance: ", await nftStandard1.balanceOf(owner.address));
+        console.log("owner nftStandard balance: ", await nftStandard.balanceOf(owner.address));
+        console.log("owner nftStandard1 balance: ", await nftStandard1.balanceOf(owner.address));
+        console.log("account1 nftStandard balance: ", await nftStandard.balanceOf(accounts[1].address));
+        console.log("account1 nftStandard1 balance: ", await nftStandard1.balanceOf(accounts[1].address));
+    });
+});

@@ -1,0 +1,116 @@
+const { expect } = require("chai");
+const { ethers, network } = require("hardhat");
+const { MerkleTree } = require('merkletreejs');
+const keccak256 = require('keccak256');
+// const { time } = require('openzeppelin-test-helpers');
+const assert = require('assert').strict;
+const provider = waffle.provider;
+
+require("@nomiclabs/hardhat-ethers");
+
+describe("Test Token", async function () {
+    let owner, accounts;
+    let metaSpeedClub, stakingContract, rewardToken;
+    before(async () => {
+        [owner, ...accounts] = await ethers.getSigners();
+
+        const MetaSpeedClub = await ethers.getContractFactory("MetaSpeedClub");
+        metaSpeedClub = await MetaSpeedClub.deploy();
+        await metaSpeedClub.deployed();
+        console.log("metaSpeedClub address: ", metaSpeedClub.address);
+
+        const RewardToken = await ethers.getContractFactory("RewardToken");
+        rewardToken = await RewardToken.deploy();
+        await rewardToken.deployed();
+        console.log("rewardToken address: ", rewardToken.address);
+
+        const StakingContract = await ethers.getContractFactory("StakingContract");
+        stakingContract = await StakingContract.deploy(rewardToken.address, metaSpeedClub.address);
+        await stakingContract.deployed();
+        console.log("stakingContract address: ", stakingContract.address);
+
+        await metaSpeedClub.unPause();
+        await rewardToken.transfer(stakingContract.address, ethers.utils.parseEther("100000"))
+    });
+    
+    it("Can mint", async function () {
+        let preSaleWhitelistAddresses = [  accounts[0].address, accounts[1].address, 
+                                    accounts[2].address, accounts[3].address, 
+                                    accounts[4].address];
+
+        const preSaleLeafNodes = preSaleWhitelistAddresses.map(addr => keccak256(addr));
+        const preSaleMerkleTree = new MerkleTree(preSaleLeafNodes, keccak256, {sortPairs: true});
+        const preSaleRootHash = preSaleMerkleTree.getRoot();
+
+        await metaSpeedClub.setMerkleRoot(preSaleMerkleTree.getHexRoot());
+
+        const nowTime = Math.round(new Date().getTime()/1000);
+        // const preSaleStartTime = nowTime + 86400;
+        // const publicSaleStartTime = preSaleStartTime + 3600 * 24;
+        // const preSalePrice = ethers.utils.parseEther("0.1");
+        // const publicSalePrice = ethers.utils.parseEther("0.15");
+        // const preSaleLimit = 3;
+        // const publicSaleLimit = 5;
+        // await metaSpeedClub.setConfig(preSaleStartTime, publicSaleStartTime,
+        //                     preSalePrice, publicSalePrice,
+        //                     preSaleLimit, publicSaleLimit);
+
+        await network.provider.send("evm_increaseTime", [1652626686 - nowTime + 10]);
+        await network.provider.send("evm_mine");
+
+        console.log("Sale State : ", await metaSpeedClub.getSaleState());
+
+        let claimingAddress = keccak256(accounts[0].address);
+        let hexProof = preSaleMerkleTree.getHexProof(claimingAddress);
+        await metaSpeedClub.connect(accounts[0]).mintNFT(hexProof, 2, {value: ethers.utils.parseEther("0.3")});
+        console.log("accounts0 Balance: ", await metaSpeedClub.balanceOf(accounts[0].address));
+        console.log("total supply: ", await metaSpeedClub.totalSupply())
+        // console.log("token ID: ", await metaSpeedClub.tokenOfOwnerByIndex(accounts[0].address, 0))
+        console.log("token ID: ", await metaSpeedClub.tokenOfOwnerByIndex(accounts[0].address, 1))
+
+        await network.provider.send("evm_increaseTime", [3600 * 24]);
+        await network.provider.send("evm_mine");
+
+        console.log("Sale State : ", await metaSpeedClub.getSaleState());
+
+        await metaSpeedClub.connect(accounts[5]).mintNFT(hexProof, 2, {value: ethers.utils.parseEther("0.5")});
+        console.log("accounts5 Balance: ", await metaSpeedClub.balanceOf(accounts[5].address));
+        console.log("total supply: ", await metaSpeedClub.totalSupply())
+        console.log("token ID: ", await metaSpeedClub.tokenOfOwnerByIndex(accounts[5].address, 0))
+        console.log("token ID: ", await metaSpeedClub.tokenOfOwnerByIndex(accounts[5].address, 1))
+
+        await metaSpeedClub.connect(accounts[10]).mintNFT(hexProof, 5, {value: ethers.utils.parseEther("1.25")});
+        console.log("accounts10 Balance: ", await metaSpeedClub.balanceOf(accounts[10].address));
+        console.log("total supply: ", await metaSpeedClub.totalSupply())
+        console.log("token ID: ", await metaSpeedClub.tokenOfOwnerByIndex(accounts[10].address, 0))
+        console.log("token ID: ", await metaSpeedClub.tokenOfOwnerByIndex(accounts[10].address, 1))
+        console.log("token ID: ", await metaSpeedClub.tokenOfOwnerByIndex(accounts[10].address, 2))
+        console.log("token ID: ", await metaSpeedClub.tokenOfOwnerByIndex(accounts[10].address, 3))
+        console.log("token ID: ", await metaSpeedClub.tokenOfOwnerByIndex(accounts[10].address, 4))
+
+        metaSpeedClub.mintNFTForOwner();
+        console.log("Owner Balance: ", await metaSpeedClub.balanceOf(owner.address));
+    });
+
+    it("Can Stake", async function () {
+
+        const id1 = await metaSpeedClub.tokenOfOwnerByIndex(accounts[10].address, 0)
+        const id2 = await metaSpeedClub.tokenOfOwnerByIndex(accounts[10].address, 1)
+        const id3 = await metaSpeedClub.tokenOfOwnerByIndex(accounts[10].address, 2)
+        const ids_10 = [id1, id2, id3];
+        await metaSpeedClub.connect(accounts[10]).setApprovalForAll(stakingContract.address, true);
+        await stakingContract.connect(accounts[10]).stake(ids_10);
+
+        await network.provider.send("evm_increaseTime", [3600 * 3]);
+        await network.provider.send("evm_mine");
+
+
+        console.log("Pending RewardToken Amount: ", await stakingContract.pendingTotalReward(accounts[10].address))
+        console.log("Pending RewardToken Amount1: ", await stakingContract.pendingReward(accounts[10].address, id1))
+        console.log("Pending RewardToken Amount2: ", await stakingContract.pendingReward(accounts[10].address, id2))
+        console.log("Pending RewardToken Amount3: ", await stakingContract.pendingReward(accounts[10].address, id3))
+
+        await stakingContract.connect(accounts[10]).unstake(ids_10);
+        console.log("account10 rewardtoken amount: ", await rewardToken.balanceOf(accounts[10].address))
+    });
+});

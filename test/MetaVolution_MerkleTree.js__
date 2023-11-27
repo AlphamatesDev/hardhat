@@ -1,0 +1,321 @@
+const { expect } = require("chai");
+const { ethers, network } = require("hardhat");
+// const { time } = require('openzeppelin-test-helpers');
+const { MerkleTree } = require('merkletreejs');
+const keccak256 = require('keccak256');
+const assert = require('assert').strict;
+const provider = waffle.provider;
+
+const web3 = require("@nomiclabs/hardhat-ethers");
+
+describe("Test Token", function () {
+    let metropyToken, genesis, vrfGenerator, obelisk, land, staking;
+    let owner, accounts;
+
+    /////////////////////////////////////////////////////////////////////////////////
+    //// MerkleTrees
+    /////////////////////////////////////////////////////////////////////////////////
+
+    let baseIDs =       [1, 8, 9, 13, 14, 17, 18, 21, 22, 31, 32, 33, 34, 37, 38, 44, 45, 46, 55, 56, 57, 71, 72];
+    let bronzeIDs =     [2, 10, 15, 15, 19, 20, 23, 35, 39, 47, 48, 58, 59, 69, 70, 73];
+    let silverIDs =     [3, 11, 16, 24, 36, 40, 49, 50, 60, 68, 74];
+    let goldIDs =       [4, 12, 25, 28, 41, 51, 61, 67, 75];
+    let diamondIDs =    [5, 26, 27, 42, 52, 62, 66];
+    let prismIDs =      [6, 29, 43, 53, 63, 65];
+    let ssIDs =         [7, 30, 54, 64];
+    let luciverseId =   76;
+
+    const baseLeafNodes = baseIDs.map(id => keccak256(id.toString()));
+    const baseMerkleTree = new MerkleTree(baseLeafNodes, keccak256, {sortPairs: true});
+    const baseRootHash = baseMerkleTree.getRoot();
+    // console.log(baseRootHash)
+
+    const bronzeLeafNodes = bronzeIDs.map(id => keccak256(id.toString()));
+    const bronzeMerkleTree = new MerkleTree(bronzeLeafNodes, keccak256, {sortPairs: true});
+    const bronzeRootHash = bronzeMerkleTree.getRoot();
+
+    const silverLeafNodes = silverIDs.map(id => keccak256(id.toString()));
+    const silverMerkleTree = new MerkleTree(silverLeafNodes, keccak256, {sortPairs: true});
+    const silverRootHash = silverMerkleTree.getRoot();
+
+    const goldLeafNodes = goldIDs.map(id => keccak256(id.toString()));
+    const goldMerkleTree = new MerkleTree(goldLeafNodes, keccak256, {sortPairs: true});
+    const goldRootHash = goldMerkleTree.getRoot();
+
+    const diamondLeafNodes = diamondIDs.map(id => keccak256(id.toString()));
+    const diamondMerkleTree = new MerkleTree(diamondLeafNodes, keccak256, {sortPairs: true});
+    const diamondRootHash = diamondMerkleTree.getRoot();
+
+    const prismLeafNodes = prismIDs.map(id => keccak256(id.toString()));
+    const prismMerkleTree = new MerkleTree(prismLeafNodes, keccak256, {sortPairs: true});
+    const prismRootHash = prismMerkleTree.getRoot();
+
+    const ssLeafNodes = ssIDs.map(id => keccak256(id.toString()));
+    const ssMerkleTree = new MerkleTree(ssLeafNodes, keccak256, {sortPairs: true});
+    const ssRootHash = ssMerkleTree.getRoot();
+
+    const genesisMerkleTreeTypes = [ baseMerkleTree.getHexRoot(), bronzeMerkleTree.getHexRoot(), silverMerkleTree.getHexRoot(),
+        goldMerkleTree.getHexRoot(), diamondMerkleTree.getHexRoot(), prismMerkleTree.getHexRoot(),
+        ssMerkleTree.getHexRoot(), ];
+
+    let tokenId = 1;
+    const leaf1 = keccak256(tokenId.toString());
+    const hexProof1 = baseMerkleTree.getHexProof(leaf1);
+
+    tokenId = 2;
+    const leaf2 = keccak256(tokenId.toString());
+    const hexProof2 = bronzeMerkleTree.getHexProof(leaf2);
+
+    tokenId = 3;
+    const leaf3 = keccak256(tokenId.toString());
+    const hexProof3 = silverMerkleTree.getHexProof(leaf3);
+
+    tokenId = 4;
+    const leaf4 = keccak256(tokenId.toString());
+    const hexProof4 = goldMerkleTree.getHexProof(leaf4);
+
+    tokenId = 5;
+    const leaf5 = keccak256(tokenId.toString());
+    const hexProof5 = diamondMerkleTree.getHexProof(leaf5);
+
+    before(async () => {
+        [owner, ...accounts] = await ethers.getSigners();
+        const MetropyToken = await ethers.getContractFactory("MetropyToken");
+        metropyToken = await MetropyToken.deploy(1000000000);
+        await metropyToken.deployed();
+        // console.log("MetropyToken address: ", metropyToken.address);
+
+        const Genesis = await ethers.getContractFactory("Genesis");
+        genesis = await Genesis.deploy();
+        await genesis.deployed();
+        // console.log("Genesis address: ", genesis.address);
+
+        const rand = "rand";
+        const VRFGenerator = await ethers.getContractFactory("VRFv2SubscriptionManager");
+        vrfGenerator = await VRFGenerator.deploy(rand);
+        await vrfGenerator.deployed();
+        // console.log("VRFGenerator address: ", vrfGenerator.address);
+
+        const Obelisk = await ethers.getContractFactory("Obelisk");
+        obelisk = await Obelisk.deploy("", metropyToken.address, vrfGenerator.address); // random function address
+        await obelisk.deployed();
+        // console.log("Obelisk address: ", obelisk.address);
+
+        const Land = await ethers.getContractFactory("Land");
+        land = await Land.deploy("", metropyToken.address, obelisk.address, vrfGenerator.address);
+        await land.deployed();
+        // console.log("Land address: ", land.address);
+
+        const Staking = await ethers.getContractFactory("StakeToken");
+        staking = await Staking.deploy(metropyToken.address, genesis.address, owner.address, land.address, obelisk.address);
+        await staking.deployed();
+        // console.log("Staking address: ", staking.address);
+
+        // preprocessing...........
+        await genesis.pause(false);
+        await obelisk.pause(false);
+        await land.pause(false);
+        await metropyToken.transfer(staking.address, ethers.utils.parseEther("1000000"));
+        await obelisk.changeStakingAddress(staking.address);
+        await land.changeStakingAddress(staking.address);
+
+        // await genesis.setPublicSale();
+        await genesis.revealToken();
+    });
+
+    it("users can mint Genesis and stake them", async function() {
+
+        [owner, ...accounts] = await ethers.getSigners();
+
+        let preSaleWhitelistAddresses = [ accounts[0].address, accounts[1].address,
+            accounts[2].address, accounts[3].address,
+            accounts[4].address, accounts[5].address,
+            accounts[6].address, accounts[7].address,
+            accounts[8].address, accounts[9].address, ];
+
+        const preSaleLeafNodes = preSaleWhitelistAddresses.map(addr => keccak256(addr));
+        const preSaleMerkleTree = new MerkleTree(preSaleLeafNodes, keccak256, {sortPairs: true});
+        const preSaleRootHash = preSaleMerkleTree.getRoot();
+
+        await genesis.setMerkleRoot(preSaleMerkleTree.getHexRoot());
+        await genesis.setMerkleRootTypes(genesisMerkleTreeTypes);
+        await genesis.setLuciverseId(luciverseId);
+
+        const leaf0 = keccak256(accounts[0].address);
+        let hexProof0 = preSaleMerkleTree.getHexProof(leaf0)
+        await genesis.connect(accounts[0]).mint(hexProof0, accounts[0].address, {value: ethers.utils.parseEther("0.075")});
+        await genesis.connect(accounts[0]).mint(hexProof0, accounts[0].address, {value: ethers.utils.parseEther("0.075")});
+        await genesis.connect(accounts[0]).mint(hexProof0, accounts[0].address, {value: ethers.utils.parseEther("0.075")});
+        await genesis.connect(accounts[0]).mint(hexProof0, accounts[0].address, {value: ethers.utils.parseEther("0.075")});
+        await genesis.connect(accounts[0]).mint(hexProof0, accounts[0].address, {value: ethers.utils.parseEther("0.075")});
+        let genesisBal=  await genesis.balanceOf(accounts[0].address);
+        expect(genesisBal.toString()).to.deep.equal('5');
+
+        /////////////////////////////////////////////////////////
+        ////         Mint Obelisk
+        /////////////////////////////////////////////////////////
+        await metropyToken.transfer(accounts[0].address, ethers.utils.parseEther("1740"));
+
+        await metropyToken.connect(accounts[0]).approve(obelisk.address, ethers.utils.parseEther("1740"));
+        await obelisk.connect(accounts[0]).mint(10);
+
+        console.log("account0 metro balance: ", await metropyToken.balanceOf(accounts[0].address));
+        /////////////////////////////////////////////////////////
+        ////         Stake 5 Genesis
+        /////////////////////////////////////////////////////////
+        await network.provider.send("evm_increaseTime", [6000]);
+        await network.provider.send("evm_mine");
+
+        await genesis.connect(accounts[0]).setApprovalForAll(staking.address, true);
+        await staking.connect(accounts[0]).stakeTokens([1, 2, 3, 4, 5], [hexProof1, hexProof2, hexProof3, hexProof4, hexProof5]);
+        
+        /////////////////////////////////////////////////////////
+        ////         Unstake 4 Genesis
+        /////////////////////////////////////////////////////////
+        await network.provider.send("evm_increaseTime", [1200]);
+        await network.provider.send("evm_mine");
+
+        console.log("calcHarvestNumFormOther: ", ethers.utils.formatEther(await staking.calcHarvestNumFormOther(accounts[0].address)));
+        console.log("calcHarvestTot: ", ethers.utils.formatEther(await staking.calcHarvestTot(accounts[0].address)));
+
+        await staking.connect(accounts[0]).unstakeTokensById(true, [hexProof1, hexProof2, hexProof3, hexProof4], [1,2, 3, 4]);
+        console.log("account0 metro balance: ", ethers.utils.formatEther(await metropyToken.balanceOf(accounts[0].address)));
+
+        
+        /////////////////////////////////////////////////////////
+        ////         Unstake Rest Genesis
+        /////////////////////////////////////////////////////////
+        await network.provider.send("evm_increaseTime", [1200]);
+        await network.provider.send("evm_mine");
+
+        console.log("calcHarvestNumFormOther: ", ethers.utils.formatEther(await staking.calcHarvestNumFormOther(accounts[0].address)));
+        console.log("calcHarvestTot: ", ethers.utils.formatEther(await staking.calcHarvestTot(accounts[0].address)));
+
+        await staking.connect(accounts[0]).unstakeTokens(true);
+        console.log("account0 metro balance: ", ethers.utils.formatEther(await metropyToken.balanceOf(accounts[0].address)));
+    });
+
+    // it("users can mint Genesis and stake them", async function() {
+
+    //     [owner, ...accounts] = await ethers.getSigners();
+
+    //     let preSaleWhitelistAddresses = [ accounts[0].address, accounts[1].address,
+    //         accounts[2].address, accounts[3].address,
+    //         accounts[4].address, accounts[5].address,
+    //         accounts[6].address, accounts[7].address,
+    //         accounts[8].address, accounts[9].address, ];
+
+    //     const preSaleLeafNodes = preSaleWhitelistAddresses.map(addr => keccak256(addr));
+    //     const preSaleMerkleTree = new MerkleTree(preSaleLeafNodes, keccak256, {sortPairs: true});
+    //     const preSaleRootHash = preSaleMerkleTree.getRoot();
+
+    //     await genesis.setMerkleRoot(preSaleMerkleTree.getHexRoot());
+    //     await genesis.setMerkleRootTypes(genesisMerkleTreeTypes);
+    //     await genesis.setLuciverseId(luciverseId);
+
+    //     const leaf0 = keccak256(accounts[0].address);
+    //     let hexProof0 = preSaleMerkleTree.getHexProof(leaf0)
+    //     await genesis.connect(accounts[0]).mint(hexProof0, accounts[0].address, {value: ethers.utils.parseEther("0.075")});
+    //     await genesis.connect(accounts[0]).mint(hexProof0, accounts[0].address, {value: ethers.utils.parseEther("0.075")});
+    //     await genesis.connect(accounts[0]).mint(hexProof0, accounts[0].address, {value: ethers.utils.parseEther("0.075")});
+    //     await genesis.connect(accounts[0]).mint(hexProof0, accounts[0].address, {value: ethers.utils.parseEther("0.075")});
+    //     await genesis.connect(accounts[0]).mint(hexProof0, accounts[0].address, {value: ethers.utils.parseEther("0.075")});
+    //     let genesisBal=  await genesis.balanceOf(accounts[0].address);
+    //     expect(genesisBal.toString()).to.deep.equal('5');
+
+    //     await metropyToken.transfer(accounts[0].address, ethers.utils.parseEther("30000"));
+    //     await metropyToken.transfer(accounts[1].address, ethers.utils.parseEther("30000"));
+
+    //     await metropyToken.connect(accounts[0]).approve(obelisk.address, ethers.utils.parseEther("1740"));
+    //     await obelisk.connect(accounts[0]).mint(10);
+
+    // });
+
+    // it("getType can distinguish between valid proofs and invalid proofs", async function() {
+    //     let goodProof = await genesis.getType(hexProof1, 1);
+    //     expect(goodProof.toString()).to.deep.equal('0');
+    //     goodProof = await genesis.getType(hexProof2, 2);
+    //     expect(goodProof.toString()).to.deep.equal('1');
+    //     goodProof = await genesis.getType(hexProof3, 3);
+    //     expect(goodProof.toString()).to.deep.equal('2');
+
+    //     let badProof = await genesis.getType(hexProof1, 2);
+    //     expect(badProof.toString()).to.deep.equal('8');
+    //     goodProof = await genesis.getType(hexProof3, 2);
+    //     expect(badProof.toString()).to.deep.equal('8');
+    // });
+
+    // it("staking", async function() {
+    //     await genesis.connect(accounts[0]).approve(staking.address, 1);
+    //     await genesis.connect(accounts[0]).approve(staking.address, 2);
+    //     await genesis.connect(accounts[0]).approve(staking.address, 3);
+
+    //     let stakingBal = await staking.balanceOf(accounts[0].address);
+    //     expect(stakingBal.toString()).to.deep.equal('0');
+
+    //     console.log("\ngetStakedTokenIds: ", await staking.connect(accounts[0]).getStakedTokenIds(accounts[0].address));
+
+    //     stakingBal = await staking.connect(accounts[0]).stakeTokens([1, 2, 3], [hexProof1, hexProof2, hexProof3]);
+    //     await network.provider.send("evm_increaseTime", [1200]);
+    //     await network.provider.send("evm_mine");
+    //     await staking.connect(accounts[0]).claimRewards();
+    //     stakingBal = await metropyToken.balanceOf(accounts[0].address);
+    //     stakingBal /= 1e18;
+    //     stakingBal = Math.floor(stakingBal);
+    //     console.log("3 staked 1200s - metro balance: ", stakingBal);
+    //     expect(stakingBal.toString()).to.deep.equal('540');    // 40 + 45 + 50 (base, bronze, silver) staked for 2 days = 270 Metropy
+
+    //     await staking.connect(accounts[0]).unstakeTokensById(true, [hexProof1, hexProof2], [1,2]);
+    //     console.log("metro balance: ", await metropyToken.balanceOf(accounts[0].address));
+
+    //     await network.provider.send("evm_increaseTime", [1200]);
+    //     await network.provider.send("evm_mine");
+
+    //     await staking.connect(accounts[0]).claimRewards();
+    //     console.log("metro balance: ", await metropyToken.balanceOf(accounts[0].address));
+
+    //     await network.provider.send("evm_increaseTime", [1200]);
+    //     await network.provider.send("evm_mine");
+
+    //     await staking.connect(accounts[0]).unstakeTokens(true);
+    //     console.log("metro balance: ", await metropyToken.balanceOf(accounts[0].address));
+    // });
+
+    // it("Users can mint Obelisk and Land by using metropyToken", async function() {
+    //     await metropyToken.transfer(accounts[0].address, ethers.utils.parseEther("30000"));
+    //     await metropyToken.transfer(accounts[1].address, ethers.utils.parseEther("30000"));
+
+    //     await metropyToken.connect(accounts[0]).approve(obelisk.address, ethers.utils.parseEther("1740"));
+    //     await obelisk.connect(accounts[0]).mint(10);
+
+    //     const id = 0;
+    //     await metropyToken.connect(accounts[0]).approve(land.address, ethers.utils.parseEther("1000"));
+    //     await land.connect(accounts[0]).mint(id, 1);
+
+    //     await network.provider.send("evm_increaseTime", [86400]);
+    //     await network.provider.send("evm_mine");
+    //     console.log("Obelisk Reward: ", await obelisk.connect(accounts[0]).getRewardNum(accounts[0].address));
+    //     console.log("Land Reward: ", await land.connect(accounts[0]).getRewardNum(accounts[0].address));
+    // });
+
+    // it("Users can mint Obelisk and Land by using metropyToken", async function() {
+
+    //     await genesis.connect(accounts[0]).approve(staking.address, 1);
+    //     await staking.connect(accounts[0]).stakeTokens([1], [hexProof1]);
+
+    //     await metropyToken.transfer(accounts[0].address, ethers.utils.parseEther("30000"));
+    //     await metropyToken.transfer(accounts[1].address, ethers.utils.parseEther("30000"));
+
+    //     await metropyToken.connect(accounts[0]).approve(obelisk.address, ethers.utils.parseEther("30000"));
+    //     await obelisk.connect(accounts[0]).mint(10);
+
+    //     await network.provider.send("evm_increaseTime", [600]);
+    //     await network.provider.send("evm_mine");
+
+    //     console.log("Obelisk Reward: ", await obelisk.getRewardNum(accounts[0].address));
+    //     console.log("calcHarvestNumFormOther: ", await staking.calcHarvestNumFormOther(accounts[0].address));
+    //     console.log("calcHarvestTot: ", await staking.calcHarvestTot(accounts[0].address));
+
+    //     // await expect(staking.connect(account2).aaa(account2.address, [tokenId], [0])).to.not.be.reverted;
+    // });
+});

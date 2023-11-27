@@ -1,0 +1,49 @@
+const { expect } = require("chai");
+const { ethers } = require("hardhat");
+
+describe("Test", function () {
+  it("Should return the new greeting once it's changed", async function () {
+    const [ owner, addr1, addr2, addr3 ] = await hre.ethers.getSigners();
+    const VRFGenerator = await ethers.getContractFactory("VRFv2SubscriptionManager");
+    const MetropyToken = await ethers.getContractFactory("MetropyToken");
+    const Obelisk = await ethers.getContractFactory("Obelisk");
+    const Genesis = await ethers.getContractFactory("Genesis");
+    const Land = await ethers.getContractFactory("Land");
+    const Staking = await ethers.getContractFactory("StakeToken");
+
+    // const vrfGenerator = await VRFGenerator.deploy();
+    // await vrfGenerator.deployed();
+
+    const metropyToken = await MetropyToken.deploy(1000000);
+    await metropyToken.deployed();
+
+    console.log("owner: ", owner);
+
+    // const obelisk = await Obelisk.deploy("", metropyToken.address, vrfGenerator.address);
+    // await obelisk.deployed();
+
+    // const genesis = await Genesis.deploy();
+    // await genesis.deployed();
+
+    // const land = await Land.deploy("", metropyToken.address, obelisk.address, vrfGenerator.address);
+    // await land.deployed();
+
+    // const staking = await Staking.deploy(metropyToken.address, genesis.address, owner.address, land.address, obelisk.address);
+    // await staking.deployed();
+
+    // const transferAmount = ethers.utils.parseEther("10000");
+    // await metropyToken.connect(owner).transfer(addr1.address, transferAmount);
+
+    // await obelisk.connect(owner).pause(false);
+    // const approveAmount = ethers.utils.parseEther("100000000000");
+    // await metropyToken.connect(addr1).approve(obelisk.address, approveAmount);
+
+    // let balTropyOfAddr1 = await metropyToken.balanceOf(addr1.address);
+    // console.log("addr1 tropy balance before mint: ", balTropyOfAddr1.toString());
+    // await obelisk.connect(addr1).mint(1, 2);
+    // balTropyOfAddr1 = await metropyToken.balanceOf(addr1.address);
+    // console.log("addr1 tropy balance after mint: ", balTropyOfAddr1.toString());
+    // const balObeliskOfAddr1 = await obelisk.balanceOf(addr1.address, 1);
+    // console.log("addr1 obelisk balance: ", balObeliskOfAddr1.toString());
+  });
+});

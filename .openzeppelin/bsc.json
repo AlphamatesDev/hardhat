@@ -1,0 +1,189 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x34072d0989221e84945acFbeAD9e7F15424CD608",
+    "txHash": "0x937a8cc73b551e291d4b5bc6b918c821f9ad1b2f53f6dd0d13de8f744fdfcc02"
+  },
+  "proxies": [
+    {
+      "address": "0x2A01BB1D3389352942eFB671bCc6bB3891C13d9A",
+      "txHash": "0xa3718f270629e9c955cb0c51a4ebc14372f75bbc322c7cf2f2ac209d1435c087",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x6B9B23D0E2113B44CE87d40132ac4d458500c33a",
+      "txHash": "0x2116ee7192112a3f9851866ef485b9139735b201b34647db5f183158f2fbac0f",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "3e031e0ff2c0073d84b2d5d8b043c73dd91b1a94a45a4b42cb94aa246fc3cfbf": {
+      "address": "0xd4835453BD71dBfE1ff0f4530c61966B6A26BB9E",
+      "txHash": "0x7f2d5a42a2e93bbbb2d3acb4a19f1fe4071b9f09116b598f2f760e8633ba3871",
+      "layout": {
+        "solcVersion": "0.8.7",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "_saleTokenAddress",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_contract(IERC20)704",
+            "contract": "Presale",
+            "src": "contracts\\Presale\\Presale.sol:13"
+          },
+          {
+            "label": "tokenPrice_USD",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_uint256",
+            "contract": "Presale",
+            "src": "contracts\\Presale\\Presale.sol:14"
+          },
+          {
+            "label": "startTime",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_uint256",
+            "contract": "Presale",
+            "src": "contracts\\Presale\\Presale.sol:16"
+          },
+          {
+            "label": "endTime",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_uint256",
+            "contract": "Presale",
+            "src": "contracts\\Presale\\Presale.sol:17"
+          },
+          {
+            "label": "_userPaid_BNB",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "Presale",
+            "src": "contracts\\Presale\\Presale.sol:19"
+          },
+          {
+            "label": "priceFeed_BNB",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_contract(IPriceFeedExt)714",
+            "contract": "Presale",
+            "src": "contracts\\Presale\\Presale.sol:20"
+          },
+          {
+            "label": "_usdtAddress",
+            "offset": 0,
+            "slot": "107",
+            "type": "t_contract(IERC20)704",
+            "contract": "Presale",
+            "src": "contracts\\Presale\\Presale.sol:22"
+          },
+          {
+            "label": "_userPaid_USDT",
+            "offset": 0,
+            "slot": "108",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "Presale",
+            "src": "contracts\\Presale\\Presale.sol:23"
+          },
+          {
+            "label": "_busdAddress",
+            "offset": 0,
+            "slot": "109",
+            "type": "t_contract(IERC20)704",
+            "contract": "Presale",
+            "src": "contracts\\Presale\\Presale.sol:25"
+          },
+          {
+            "label": "_userPaid_BUSD",
+            "offset": 0,
+            "slot": "110",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "Presale",
+            "src": "contracts\\Presale\\Presale.sol:26"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IERC20)704": {
+            "label": "contract IERC20",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IPriceFeedExt)714": {
+            "label": "contract IPriceFeedExt",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    }
+  }
+}
