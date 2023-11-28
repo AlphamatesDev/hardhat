@@ -10,12 +10,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract PulsePixelCartel is ERC721, Ownable {
     using Strings for uint256;
     
-    string private _baseURIextended;
-    string public unrevealURI;
-    bool public reveal;
+    string  private _baseURIextended;
+    string  public unrevealURI;
+    bool    public reveal;
     
-    string public mintStep;
-    bool public mintPause;
+    string  public mintStep;
+    bool    public mintPause;
     uint256 public mintPrice;
     bytes32 public merkleRoot;
 
@@ -23,6 +23,9 @@ contract PulsePixelCartel is ERC721, Ownable {
     uint256 public MINT_LIMIT_TRANSACTION;
 
     uint256 public mintCounter;
+
+    address payable public stakingContract;
+    uint256 public percentToStaking;
 
     mapping (address => uint256) public referralMintCount;
 
@@ -62,6 +65,9 @@ contract PulsePixelCartel is ERC721, Ownable {
         if(merkleRoot != 0x0) {
             require(MerkleProof.verify(_proof, merkleRoot, keccak256(abi.encodePacked(msg.sender))), "Address does not exist in whitelist.");
         }
+
+        payable(owner()).transfer(msg.value * (100 - percentToStaking) / 100);
+        stakingContract.transfer(msg.value * percentToStaking / 100);
 
         mint(msg.sender, _quantity, _referrer);
     }
@@ -134,5 +140,10 @@ contract PulsePixelCartel is ERC721, Ownable {
 
     function unPause() public onlyOwner {
         mintPause = false;
+    }
+
+    function setStakingContract(address _stakingContract, uint256 _percentToStaking) public onlyOwner {
+        stakingContract = payable(_stakingContract);
+        percentToStaking = _percentToStaking;
     }
 }
