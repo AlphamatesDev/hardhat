@@ -26,6 +26,7 @@ contract StakingContract is Ownable, ReentrancyGuard {
 
     constructor() {
         collectionToStake = 0x74c46bAdaDaF2f6bca40ba252B9B130DF2b7bD4d;
+        cntStakedNFT = 0;
         rewardSpeedUp = 1; // 1x
     }
 
