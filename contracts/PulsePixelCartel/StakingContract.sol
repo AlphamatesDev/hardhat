@@ -61,12 +61,15 @@ contract StakingContract is Ownable, ReentrancyGuard {
         uint256 pendingRewards = 0;
 
         for(uint256 i = 0; i < EnumerableSet.length(_userInfo.tokenIds); i++) {
-            pendingRewards += ((block.number - _userInfo.startBlocks[EnumerableSet.at(_userInfo.tokenIds, i)]) * getPLSPerBlock());
+            if (!isClaimed[EnumerableSet.at(_userInfo.tokenIds, i)])
+                pendingRewards += ((block.number - _userInfo.startBlocks[EnumerableSet.at(_userInfo.tokenIds, i)]) * getPLSPerBlock());
         }
         return pendingRewards;
     }
 
     function pendingRewardForTokenId(address _user, uint256 _tokenId) public view returns (uint256) {
+        if (isClaimed[_tokenId]) return 0;
+
         UserInfo storage _userInfo = userInfo[_user];
         uint256 pendingRewards = 0;
 
