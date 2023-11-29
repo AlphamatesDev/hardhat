@@ -9,8 +9,9 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 contract StakingContract is Ownable, ReentrancyGuard {
 
-    uint256 public rewardTokenPerBlock;
     address public collectionToStake;
+    uint256 public cntStakedNFT;
+    uint256 public rewardSpeedUp;
 
     struct UserInfo {
         EnumerableSet.UintSet tokenIds;
@@ -24,14 +25,20 @@ contract StakingContract is Ownable, ReentrancyGuard {
     event UnStake(address indexed user, uint256 tokenId);
 
     constructor() {
+        collectionToStake = 0x74c46bAdaDaF2f6bca40ba252B9B130DF2b7bD4d;
+        rewardSpeedUp = 1; // 1x
     }
 
     function setCollectionToStake(address _collection) external onlyOwner {
         collectionToStake = _collection;
     }
 
-    function setRewardTokenPerBlock(uint256 _rewardTokenPerBlock) external onlyOwner {
-        rewardTokenPerBlock = _rewardTokenPerBlock;
+    function setRewardSpeedUp(uint256 _rewardSpeedUp) external onlyOwner {
+        rewardSpeedUp = _rewardSpeedUp;
+    }
+
+    function getPLSPerBlock() public view returns (uint256) {
+        return address(this).balance / (cntStakedNFT * 3153600) * rewardSpeedUp;
     }
 
     function withdrawTokens() external onlyOwner {
@@ -43,6 +50,7 @@ contract StakingContract is Ownable, ReentrancyGuard {
         require(EnumerableSet.length(_userInfo.tokenIds) > 0, "You have no tokens staked.");
         for(uint256 i = 0; i < EnumerableSet.length(_userInfo.tokenIds); i++) {
             IERC721(collectionToStake).transferFrom(address(this), msg.sender, EnumerableSet.at(_userInfo.tokenIds, i));
+            cntStakedNFT --;
             emit UnStake(msg.sender, EnumerableSet.at(_userInfo.tokenIds, i));
         }
     }
@@ -52,7 +60,7 @@ contract StakingContract is Ownable, ReentrancyGuard {
         uint256 pendingRewards = 0;
 
         for(uint256 i = 0; i < EnumerableSet.length(_userInfo.tokenIds); i++) {
-            pendingRewards += ((block.number - _userInfo.startBlocks[EnumerableSet.at(_userInfo.tokenIds, i)]) * rewardTokenPerBlock);
+            pendingRewards += ((block.number - _userInfo.startBlocks[EnumerableSet.at(_userInfo.tokenIds, i)]) * getPLSPerBlock());
         }
         return pendingRewards;
     }
@@ -62,7 +70,7 @@ contract StakingContract is Ownable, ReentrancyGuard {
         uint256 pendingRewards = 0;
 
         if (EnumerableSet.contains(_userInfo.tokenIds, _tokenId)) {
-            pendingRewards = ((block.number - _userInfo.startBlocks[_tokenId]) * rewardTokenPerBlock);
+            pendingRewards = ((block.number - _userInfo.startBlocks[_tokenId]) * getPLSPerBlock());
         }
         return pendingRewards;
     }
@@ -75,6 +83,7 @@ contract StakingContract is Ownable, ReentrancyGuard {
             IERC721(collectionToStake).transferFrom(msg.sender, address(this), tokenIds[i]);
             EnumerableSet.add(userInfo[msg.sender].tokenIds, tokenIds[i]);
             userInfo[msg.sender].startBlocks[tokenIds[i]] = block.number;
+            cntStakedNFT ++;
             emit Stake(msg.sender, tokenIds[i]);
         }
     }
@@ -88,6 +97,7 @@ contract StakingContract is Ownable, ReentrancyGuard {
             require(EnumerableSet.remove(_userInfo.tokenIds, tokenIds[i]), "Not your NFT Id.");
             _userInfo.startBlocks[tokenIds[i]] = block.number;
             IERC721(collectionToStake).transferFrom(address(this), msg.sender, tokenIds[i]);
+            cntStakedNFT --;
             emit UnStake(msg.sender, tokenIds[i]);
         }
     }
