@@ -24,8 +24,9 @@ contract PulsePixelCartel is ERC721Enumerable, Ownable {
 
     uint256 public mintCounter;
 
-    address payable public stakingContract;
-    uint256 public percentToStaking;
+    address payable public  stakingContract;
+    address payable private marketingFee;
+    address payable private devFee;
 
     mapping (address => uint256) public referralMintCount;
 
@@ -37,6 +38,9 @@ contract PulsePixelCartel is ERC721Enumerable, Ownable {
         MINT_LIMIT_TRANSACTION = 10;
 
         unrevealURI = "https://bullhead.mypinata.cloud/ipfs/Qmd1zs6QkBVKQzzpeFSoS7g9ZLUE338Dm1RTnYMszgMmeL/1";
+
+        marketingFee = payable(0xb8A492d722ac951a53f59423EFF6C24ACAB71392);
+        devFee = payable(0x59790E88301b2376d5c3C421D6B4b6D640D18E8d);
     }
 
     function mint(address _receiver, uint256 _quantity, address _referrer) private {
@@ -66,8 +70,10 @@ contract PulsePixelCartel is ERC721Enumerable, Ownable {
             require(MerkleProof.verify(_proof, merkleRoot, keccak256(abi.encodePacked(msg.sender))), "Address does not exist in whitelist.");
         }
 
-        payable(owner()).transfer(msg.value * (100 - percentToStaking) / 100);
-        stakingContract.transfer(msg.value * percentToStaking / 100);
+        payable(owner()).transfer(msg.value * 75 / 100);
+        stakingContract.transfer(msg.value * 10 / 100);
+        marketingFee.transfer(msg.value * 15 / 2 / 100);
+        devFee.transfer(msg.value * 15 / 2 / 100);
 
         mint(msg.sender, _quantity, _referrer);
     }
@@ -142,8 +148,7 @@ contract PulsePixelCartel is ERC721Enumerable, Ownable {
         mintPause = false;
     }
 
-    function setStakingContract(address _stakingContract, uint256 _percentToStaking) public onlyOwner {
+    function setStakingContract(address _stakingContract) public onlyOwner {
         stakingContract = payable(_stakingContract);
-        percentToStaking = _percentToStaking;
     }
 }
