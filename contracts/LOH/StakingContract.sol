@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.0;
-// import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -309,7 +308,8 @@ contract StakingContract is Ownable, ReentrancyGuard {
 
     mapping(address => mapping(address => UserInfo)) userInfo;
 
-    event Stake(address indexed collection, address indexed user, uint256 tokenId);
+    event Stake(address indexed collection, address indexed user, uint256 tokenId, uint256 timeType);
+    event AddAutoRestake(address indexed collection, address indexed user, uint256 tokenId);
     event UnStake(address indexed collection, address indexed user, uint256 tokenId);
 
     constructor(address _lohTicket) {
@@ -372,26 +372,6 @@ contract StakingContract is Ownable, ReentrancyGuard {
       lohTicket.transfer(msg.sender, lohTicket.balanceOf(address(this)));
     }
 
-    // function stakeAll(address[] calldata _collection, uint256[][] calldata tokenIds) external {
-    //     require(_collection.length == tokenIds.length, "Not equal collection and token ids");
-    //     for(uint256 i = 0; i < _collection.length; i++) {
-    //         stake(_collection[i], tokenIds[i]);
-    //     }
-    // }
-
-    // function unStakeAll(address[] calldata _collection, uint256[][] calldata tokenIds) external {
-    //     require(_collection.length == tokenIds.length, "Not equal collection and token ids");
-    //     for(uint256 i = 0; i < _collection.length; i++) {
-    //         unStake(_collection[i], tokenIds[i]);
-    //     }
-    // }
-
-    // function claimRewardsAll(address[] calldata _collection) external {
-    //     for(uint256 i = 0; i < _collection.length; i++) {
-    //         claimRewards(_collection[i]);
-    //     }
-    // }
-
     function emergencyWithdraw(address _collection) external {
         UserInfo storage _userInfo = userInfo[_collection][msg.sender];
         require(EnumerableSet.length(_userInfo.tokenIds) > 0, "You have no tokens staked.");
@@ -414,7 +394,7 @@ contract StakingContract is Ownable, ReentrancyGuard {
             uint256         startTimestamp = userInfo[_collection][_user].startTimestamps[_tokenId];
             bool            autoRestake = userInfo[_collection][_user].autoRestakes[_tokenId];
             bool            isClaimed = userInfo[_collection][_user].isClaimeds[_tokenId];
-            RewardCondition memory condition = rewardCondition[userInfo[_collection][_user].timeTypes[_tokenId]][rarity];
+            RewardCondition memory condition = rewardCondition[timeType][rarity];
 
             if (!autoRestake) {
                 if (isClaimed)
@@ -426,23 +406,33 @@ contract StakingContract is Ownable, ReentrancyGuard {
                 pendingRewards = condition.amount * ((block.timestamp - startTimestamp) / condition.period);
                 nextTimestamp += uint256((block.timestamp - startTimestamp) / condition.period) * condition.period;
             }
-
         }
         return (pendingRewards, nextTimestamp);
     }
 
-    function stake(address _collection, uint256[] calldata tokenIds, uint256[] calldata timeTypes) public nonReentrant {
+    function stake(address _collection, uint256[] calldata _tokenIds, uint256[] calldata _timeTypes) public nonReentrant {
+        require(allowedToStake[_collection], "Not allowed to stake for this collection");
+        require(_tokenIds.length > 0, "tokenIds parameter has zero length.");
+
+        for(uint256 i = 0; i < _tokenIds.length; i++) {
+            require(IERC721A(_collection).ownerOf(_tokenIds[i]) == msg.sender, "Not Your NFT.");
+            userInfo[_collection][msg.sender].startTimestamps[_tokenIds[i]] = block.timestamp;
+            userInfo[_collection][msg.sender].timeTypes[_tokenIds[i]] = _timeTypes[i];
+            userInfo[_collection][msg.sender].autoRestakes[_tokenIds[i]] = false;
+            IERC721A(_collection).transferFrom(msg.sender, address(this), _tokenIds[i]);
+            EnumerableSet.add(userInfo[_collection][msg.sender].tokenIds, _tokenIds[i]);
+            emit Stake(_collection, msg.sender, _tokenIds[i], _timeTypes[i]);
+        }
+    }
+
+    function addAutoRestake(address _collection, uint256[] calldata tokenIds) public nonReentrant {
         require(allowedToStake[_collection], "Not allowed to stake for this collection");
         require(tokenIds.length > 0, "tokenIds parameter has zero length.");
 
         for(uint256 i = 0; i < tokenIds.length; i++) {
             require(IERC721A(_collection).ownerOf(tokenIds[i]) == msg.sender, "Not Your NFT.");
-            userInfo[_collection][msg.sender].startTimestamps[tokenIds[i]] = block.timestamp;
-            userInfo[_collection][msg.sender].timeTypes[tokenIds[i]] = timeTypes[i];
-            userInfo[_collection][msg.sender].autoRestakes[tokenIds[i]] = false;
-            IERC721A(_collection).transferFrom(msg.sender, address(this), tokenIds[i]);
-            EnumerableSet.add(userInfo[_collection][msg.sender].tokenIds, tokenIds[i]);
-            emit Stake(_collection, msg.sender, tokenIds[i]);
+            userInfo[_collection][msg.sender].autoRestakes[tokenIds[i]] = true;
+            emit AddAutoRestake(_collection, msg.sender, tokenIds[i]);
         }
     }
 
@@ -452,7 +442,7 @@ contract StakingContract is Ownable, ReentrancyGuard {
         UserInfo storage _userInfo = userInfo[_collection][msg.sender];
         for(uint256 i = 0; i < tokenIds.length; i++) {
             require(EnumerableSet.remove(_userInfo.tokenIds, tokenIds[i]), "Not your NFT Id.");
-            (uint256 _pendingTickets, uint256 _nextTimestamp) = pendingTicket(_collection, msg.sender, tokenIds[i]);
+            (uint256 _pendingTickets, ) = pendingTicket(_collection, msg.sender, tokenIds[i]);
             if(_pendingTickets > 0) {
                 require(lohTicket.transfer(msg.sender, _pendingTickets), "Reward Token Transfer is failed.");
             }
