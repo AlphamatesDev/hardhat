@@ -1,24 +1,30 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IPriceFeedExt {
-    function latestAnswer() external view returns (int256 answer);
+    struct PriceInfo {
+        // Price
+        uint256 price;
+        // Confidence interval around the price
+        uint256 conf;
+    }
+    function latestAnswer() external view returns (PriceInfo memory priceInfo);
 }
 
 contract BuyLOHTicket is OwnableUpgradeable {
 
     IERC20 public _lohTicketAddress;
-    uint256 public tokenPrice_USD;
+    uint256 public lohTicketPrice_USD;
 
     mapping (address => uint256) private _userPaid_CRO;
     IPriceFeedExt public priceFeed_CRO;
     
     event BuyLOHTicket(address _from, address _to, uint256 _amount);
     event WithdrawAll(address addr);
-    
+
     receive() payable external {}
     fallback() payable external {}
 
@@ -27,36 +33,36 @@ contract BuyLOHTicket is OwnableUpgradeable {
 
         _lohTicketAddress = IERC20(0x759d34685468604c695De301ad11A9418e2f1038);
 
-        priceFeed_CRO = IPriceFeedExt(0xAB594600376Ec9fD91F8e885dADF0CE036862dE0);
+        priceFeed_CRO = IPriceFeedExt(0x5B55012bC6DBf545B6a5ab6237030f79b1E38beD);
 
-        tokenPrice_USD = 0.35 * 10 ** 8; // 35 Cents per ticket
+        lohTicketPrice_USD = 0.35 * 10 ** 8; // 35 Cents per ticket
     }
 
-    function buyTokensByCRO() external payable {
+    function buyLOHTicketsByCRO() external payable {
         require(msg.value > 0, "Insufficient CRO amount");
         uint256 amountPrice = getLatestCROPrice() * msg.value;
 
-        // token amount user want to buy
-        uint256 tokenAmount = amountPrice / tokenPrice_USD;
+        // lohTicket amount user want to buy
+        uint256 lohTicketAmount = amountPrice / lohTicketPrice_USD;
 
-        // transfer token to user
-        _lohTicketAddress.transfer(msg.sender, tokenAmount);
+        // transfer lohTicket to user
+        _lohTicketAddress.transfer(msg.sender, lohTicketAmount);
 
         // add USD user bought
         _userPaid_CRO[msg.sender] += amountPrice;
 
-        emit BuyLOHTicket(address(this), msg.sender, tokenAmount);
+        emit BuyLOHTicket(address(this), msg.sender, lohTicketAmount);
     }
 
-    function buyTokensByCROWithReferral(address toReward) external payable {
+    function buyLOHTicketsByCROWithReferral(address toReward) external payable {
         require(msg.value > 0, "Insufficient CRO amount");
         uint256 amountPrice = getLatestCROPrice() * msg.value;
 
-        // token amount user want to buy
-        uint256 tokenAmount = amountPrice / tokenPrice_USD;
+        // lohTicket amount user want to buy
+        uint256 lohTicketAmount = amountPrice / lohTicketPrice_USD;
 
-        // transfer token to user
-        _lohTicketAddress.transfer(msg.sender, tokenAmount);
+        // transfer lohTicket to user
+        _lohTicketAddress.transfer(msg.sender, lohTicketAmount);
 
         // transfer reward to referral provider
         payable(toReward).transfer(msg.value * 5 / 100);
@@ -64,16 +70,14 @@ contract BuyLOHTicket is OwnableUpgradeable {
         // add USD user bought
         _userPaid_CRO[msg.sender] += amountPrice;
 
-        emit BuyLOHTicket(address(this), msg.sender, tokenAmount);
+        emit BuyLOHTicket(address(this), msg.sender, lohTicketAmount);
     }
 
     function getLatestCROPrice() public view returns (uint256) {
-        return uint256(priceFeed_CRO.latestAnswer());
+        return uint256(priceFeed_CRO.latestAnswer().price);
     }
 
     function withdrawAll() external onlyOwner {
-        require(block.timestamp > endTime);
-
         uint256 CRObalance = address(this).balance;
         
         if (CRObalance > 0)
@@ -82,9 +86,7 @@ contract BuyLOHTicket is OwnableUpgradeable {
         emit WithdrawAll(msg.sender);
     }
 
-    function withdrawToken() public onlyOwner returns (bool) {
-        require(block.timestamp > endTime);
-
+    function withdrawLOHTicket() public onlyOwner returns (bool) {
         uint256 balance = _lohTicketAddress.balanceOf(address(this));
         return _lohTicketAddress.transfer(msg.sender, balance);
     }
@@ -98,7 +100,7 @@ contract BuyLOHTicket is OwnableUpgradeable {
     }
 
     /* Price Decimal is 8 */
-    function setLOHTicketPriceByUSD(uint256 _tokenPrice) public onlyOwner {
-        tokenPrice_USD = _tokenPrice;
+    function setLOHTicketPriceByUSD(uint256 _lohTicketPrice) public onlyOwner {
+        lohTicketPrice_USD = _lohTicketPrice;
     }
 }

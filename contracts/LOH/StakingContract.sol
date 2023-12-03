@@ -464,7 +464,7 @@ contract StakingContract is Ownable, ReentrancyGuard {
         }
     }
 
-    function getStakingInfo(address _collection, address _user) public view returns(
+    function getStakingInfo(address _collection, address _user) public view returns (
         uint256[] memory _tokenIds,
         uint256[] memory _timeTypes,
         uint256[] memory _startTimestamps,

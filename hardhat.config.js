@@ -1,13 +1,13 @@
 require('dotenv').config();
-// require("@nomicfoundation/hardhat-toolbox");
-// require("@nomiclabs/hardhat-etherscan")
-// require("@cronos-labs/hardhat-cronoscan");
+require("@nomicfoundation/hardhat-toolbox");
+require("@nomiclabs/hardhat-etherscan")
+require("@cronos-labs/hardhat-cronoscan");
 require('@openzeppelin/hardhat-upgrades');
 
-require("@nomiclabs/hardhat-waffle");
-require("@nomiclabs/hardhat-etherscan");
-require("hardhat-contract-sizer")
-require('@typechain/hardhat')
+// require("@nomiclabs/hardhat-waffle");
+// require("@nomiclabs/hardhat-etherscan");
+// require("hardhat-contract-sizer")
+// require('@typechain/hardhat')
 
 const {
   MAINNET_URL,
