@@ -14,7 +14,7 @@ interface IPriceFeedExt {
     function latestAnswer() external view returns (PriceInfo memory priceInfo);
 }
 
-contract BuyLOHTicket is OwnableUpgradeable {
+contract LOHTicketRouter is OwnableUpgradeable {
 
     IERC20 public _lohTicketAddress;
     uint256 public lohTicketPrice_USD;

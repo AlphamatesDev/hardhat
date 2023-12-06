@@ -425,29 +425,45 @@ contract StakingContract is Ownable, ReentrancyGuard {
         }
     }
 
-    function addAutoRestake(address _collection, uint256[] calldata tokenIds) public nonReentrant {
+    function addAutoRestake(address _collection, uint256[] calldata _tokenIds) public nonReentrant {
         require(allowedToStake[_collection], "Not allowed to stake for this collection");
-        require(tokenIds.length > 0, "tokenIds parameter has zero length.");
+        require(_tokenIds.length > 0, "_tokenIds parameter has zero length.");
 
-        for(uint256 i = 0; i < tokenIds.length; i++) {
-            require(IERC721A(_collection).ownerOf(tokenIds[i]) == msg.sender, "Not Your NFT.");
-            userInfo[_collection][msg.sender].autoRestakes[tokenIds[i]] = true;
-            emit AddAutoRestake(_collection, msg.sender, tokenIds[i]);
+        for(uint256 i = 0; i < _tokenIds.length; i++) {
+            require(IERC721A(_collection).ownerOf(_tokenIds[i]) == msg.sender, "Not Your NFT.");
+
+            (uint256 _pendingTickets, uint256 _nextTimestamp) = pendingTicket(_collection, msg.sender, _tokenIds[i]);
+            if(_pendingTickets > 0) {
+                require(lohTicket.transfer(msg.sender, _pendingTickets), "Reward Token Transfer is failed.");
+                if (!userInfo[_collection][msg.sender].autoRestakes[_tokenIds[i]])
+                    userInfo[_collection][msg.sender].startTimestamps[_tokenIds[i]] = block.timestamp;
+                else
+                    userInfo[_collection][msg.sender].startTimestamps[_tokenIds[i]] = _nextTimestamp;
+            }
+
+            userInfo[_collection][msg.sender].autoRestakes[_tokenIds[i]] = true;
+            userInfo[_collection][msg.sender].isClaimeds[_tokenIds[i]] = false;
+            emit AddAutoRestake(_collection, msg.sender, _tokenIds[i]);
         }
     }
 
-    function unStake(address _collection, uint256[] calldata tokenIds) public nonReentrant {
-        require(tokenIds.length > 0, "tokenIds parameter has zero length.");
+    function unStake(address _collection, uint256[] calldata _tokenIds) public nonReentrant {
+        require(_tokenIds.length > 0, "_tokenIds parameter has zero length.");
 
         UserInfo storage _userInfo = userInfo[_collection][msg.sender];
-        for(uint256 i = 0; i < tokenIds.length; i++) {
-            require(EnumerableSet.remove(_userInfo.tokenIds, tokenIds[i]), "Not your NFT Id.");
-            (uint256 _pendingTickets, ) = pendingTicket(_collection, msg.sender, tokenIds[i]);
+        for(uint256 i = 0; i < _tokenIds.length; i++) {
+            require(EnumerableSet.remove(_userInfo.tokenIds, _tokenIds[i]), "Not your NFT Id.");
+            (uint256 _pendingTickets, ) = pendingTicket(_collection, msg.sender, _tokenIds[i]);
             if(_pendingTickets > 0) {
                 require(lohTicket.transfer(msg.sender, _pendingTickets), "Reward Token Transfer is failed.");
             }
-            IERC721A(_collection).transferFrom(address(this), msg.sender, tokenIds[i]);
-            emit UnStake(_collection, msg.sender, tokenIds[i]);
+            IERC721A(_collection).transferFrom(address(this), msg.sender, _tokenIds[i]);
+            
+            userInfo[_collection][msg.sender].startTimestamps[_tokenIds[i]] = block.timestamp;
+            userInfo[_collection][msg.sender].autoRestakes[_tokenIds[i]] = false;
+            userInfo[_collection][msg.sender].isClaimeds[_tokenIds[i]] = false;
+
+            emit UnStake(_collection, msg.sender, _tokenIds[i]);
         }
     }
 

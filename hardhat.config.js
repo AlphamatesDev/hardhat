@@ -132,18 +132,18 @@ module.exports = {
       chainId: 5,
       accounts: [GOERLI_DEPLOY_KEY]
     },
-    // cronos: {
-    //   url: CRONOS_URL,
-    //   gasPrice: 5000000000000,
-    //   chainId: 25,
-    //   accounts:[CRONOS_DEPLOY_KEY]
-    // },
-    // cronostest: {
-    //   url: CRONOS_TESTNET_URL,
-    //   gasPrice: 5000000000000,
-    //   chainId: 338,
-    //   accounts:[CRONOS_TESTNET_DEPLOY_KEY]
-    // },
+    cronos: {
+      url: CRONOS_URL,
+      gasPrice: 5000000000000,
+      chainId: 25,
+      accounts:[CRONOS_DEPLOY_KEY]
+    },
+    cronostest: {
+      url: CRONOS_TESTNET_URL,
+      gasPrice: 5000000000000,
+      chainId: 338,
+      accounts:[CRONOS_TESTNET_DEPLOY_KEY]
+    },
     pulse: {
       url: PULSE_URL,
       gasPrice: 700000000000000,
@@ -153,14 +153,14 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-      mainnet: MAINNET_DEPLOY_KEY,
+      mainnet: ETHERSCAN_API_KEY,
       arbitrumOne: ARBISCAN_API_KEY,
       avalanche: SNOWTRACE_API_KEY,
       avalancheFujiTestnet: SNOWTRACE_API_KEY,
       bsc: BSCSCAN_API_KEY,
       polygon: POLYGONSCAN_API_KEY,
       goerli: ETHERSCAN_API_KEY,
-      // cronos: CRONOSSCAN_API_KEY,
+      cronos: CRONOSSCAN_API_KEY,
       pulse: PULSESCAN_API_KEY,
     },
     customChains: [
