@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-contract StakingContract is Ownable, ReentrancyGuard {
+contract StakingPPC is Ownable, ReentrancyGuard {
 
     address public collectionToStake;
     uint256 public cntStakedRewardableNFT;
@@ -27,7 +27,7 @@ contract StakingContract is Ownable, ReentrancyGuard {
     receive() external payable {}
 
     constructor() {
-        collectionToStake = 0x74c46bAdaDaF2f6bca40ba252B9B130DF2b7bD4d;
+        collectionToStake = 0xCbA43d9fa84459F91c2D6bEdA2706FE127Ce3d22;
         cntStakedRewardableNFT = 0;
         rewardSpeedUp = 1; // 1x
     }

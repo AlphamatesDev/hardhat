@@ -285,7 +285,7 @@ interface IERC721A {
     event ConsecutiveTransfer(uint256 indexed fromTokenId, uint256 toTokenId, address indexed from, address indexed to);
 }
 
-contract StakingContract is Ownable, ReentrancyGuard {
+contract StakingLOH is Ownable, ReentrancyGuard {
 
     struct RewardCondition {
         uint256 amount;

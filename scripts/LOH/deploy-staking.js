@@ -2,10 +2,10 @@ const { utils } = require("ethers");
 const crypto = require( 'crypto' );
 
 async function main() {
-    const StakingContract = await ethers.getContractFactory("StakingContract");
-    const stakingContract = await StakingContract.deploy();
-    await stakingContract.deployed();
-    console.log("StakingContract address: ", stakingContract.address);
+    const StakingLOH = await ethers.getContractFactory("StakingLOH");
+    const stakingLOH = await StakingLOH.deploy();
+    await stakingLOH.deployed();
+    console.log("StakingLOH address: ", stakingLOH.address);
 }
 
 main()
