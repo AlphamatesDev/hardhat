@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract BuyLOHTicket is Ownable {
+contract RaffleLOH is Ownable {
 
     struct RaffleInfo {
         string nameRaffle;
@@ -26,7 +26,7 @@ contract BuyLOHTicket is Ownable {
     receive() payable external {}
 
     constructor() {
-        lohTicketAddress = IERC20(0x759d34685468604c695De301ad11A9418e2f1038);
+        lohTicketAddress = IERC20(0xf1A5A831ca54AE6AD36a012F5FB2768e6f5d954A);
     }
 
     function withdrawAll() external onlyOwner {

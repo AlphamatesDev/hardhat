@@ -312,8 +312,8 @@ contract StakingLOH is Ownable, ReentrancyGuard {
     event AddAutoRestake(address indexed collection, address indexed user, uint256 tokenId);
     event UnStake(address indexed collection, address indexed user, uint256 tokenId);
 
-    constructor(address _lohTicket) {
-        lohTicket = IERC20(_lohTicket);
+    constructor() {
+        lohTicket = IERC20(0xf1A5A831ca54AE6AD36a012F5FB2768e6f5d954A);
         
         rewardCondition[0][0].amount = 1;
         rewardCondition[0][1].amount = 2;

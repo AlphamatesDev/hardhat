@@ -19,6 +19,11 @@
       "address": "0x5E76fF48e5a2F1Ad489e34FDDc7589EE62c75B11",
       "txHash": "0x3a107a99f3fd467aaee7c8c7b0ec9c38e11d3b81de296213cbebf6eee98054fe",
       "kind": "transparent"
+    },
+    {
+      "address": "0xC61bDEa4d57dBcC1Dfe03fE8a638d735dc814871",
+      "txHash": "0x5c4da6bc54398294e40c686c82a76c2d666604f2975a3cabc895985bcca09a16",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -1412,6 +1417,127 @@
             "numberOfBytes": "1"
           }
         }
+      }
+    },
+    "4977c5ec58534e9b7f24aaa615fad259e6420d8b1ab603e6ea48237d3f7f1998": {
+      "address": "0x99d5FEE2fE7cd514dab5eC2384b8a848877F177D",
+      "txHash": "0x60df3435266477c488b22abc7034c5aea6eea91036c45aff0768c57da13e90bd",
+      "layout": {
+        "solcVersion": "0.8.18",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "_lohTicketAddress",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_contract(IERC20)5861",
+            "contract": "LOHTicketRouter",
+            "src": "contracts\\LOH\\LOHTicketRouter.sol:19"
+          },
+          {
+            "label": "lohTicketPrice_USD",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_uint256",
+            "contract": "LOHTicketRouter",
+            "src": "contracts\\LOH\\LOHTicketRouter.sol:20"
+          },
+          {
+            "label": "_userPaid_CRO",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "LOHTicketRouter",
+            "src": "contracts\\LOH\\LOHTicketRouter.sol:22"
+          },
+          {
+            "label": "priceFeed_CRO",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_contract(IPriceFeedExt)21612",
+            "contract": "LOHTicketRouter",
+            "src": "contracts\\LOH\\LOHTicketRouter.sol:23"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IERC20)5861": {
+            "label": "contract IERC20",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IPriceFeedExt)21612": {
+            "label": "contract IPriceFeedExt",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {}
       }
     }
   }

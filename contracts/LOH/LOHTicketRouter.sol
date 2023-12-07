@@ -31,7 +31,7 @@ contract LOHTicketRouter is OwnableUpgradeable {
     function initialize ()  public initializer {
         __Ownable_init();
 
-        _lohTicketAddress = IERC20(0x759d34685468604c695De301ad11A9418e2f1038);
+        _lohTicketAddress = IERC20(0xf1A5A831ca54AE6AD36a012F5FB2768e6f5d954A);
 
         priceFeed_CRO = IPriceFeedExt(0x5B55012bC6DBf545B6a5ab6237030f79b1E38beD);
 
