@@ -300,6 +300,16 @@ contract StakingLOH is Ownable, ReentrancyGuard {
         mapping(uint256 => bool)    isClaimeds;
     }
 
+    struct StakingInfo {
+        address _address;
+        uint256 _tokenId;
+        uint256 _timeType;
+        uint256 _startTimestamp;
+        bool    _autoRestake;
+        bool    _isClaimed;
+        uint256 _pendingTicket;
+    }
+
     IERC20 public lohTicket;
     mapping(address => bool) public allowedToStake;
 
@@ -314,6 +324,8 @@ contract StakingLOH is Ownable, ReentrancyGuard {
 
     constructor() {
         lohTicket = IERC20(0xf1A5A831ca54AE6AD36a012F5FB2768e6f5d954A);
+        allowedToStake[0x51084c32AA5ee43a0e7bD8220195da53b5c69868] = true; // Volume 1
+        allowedToStake[0x770FA15c43b84F61434321F5167814b64790E6Fa] = true; // Reapers
         
         rewardCondition[0][0].amount = 1;
         rewardCondition[0][1].amount = 2;
@@ -410,18 +422,18 @@ contract StakingLOH is Ownable, ReentrancyGuard {
         return (pendingRewards, nextTimestamp);
     }
 
-    function stake(address _collection, uint256[] calldata _tokenIds, uint256[] calldata _timeTypes) public nonReentrant {
-        require(allowedToStake[_collection], "Not allowed to stake for this collection");
+    function stake(address[] calldata _collections, uint256[] calldata _tokenIds, uint256[] calldata _timeTypes) public nonReentrant {
         require(_tokenIds.length > 0, "tokenIds parameter has zero length.");
 
         for(uint256 i = 0; i < _tokenIds.length; i++) {
-            require(IERC721A(_collection).ownerOf(_tokenIds[i]) == msg.sender, "Not Your NFT.");
-            userInfo[_collection][msg.sender].startTimestamps[_tokenIds[i]] = block.timestamp;
-            userInfo[_collection][msg.sender].timeTypes[_tokenIds[i]] = _timeTypes[i];
-            userInfo[_collection][msg.sender].autoRestakes[_tokenIds[i]] = false;
-            IERC721A(_collection).transferFrom(msg.sender, address(this), _tokenIds[i]);
-            EnumerableSet.add(userInfo[_collection][msg.sender].tokenIds, _tokenIds[i]);
-            emit Stake(_collection, msg.sender, _tokenIds[i], _timeTypes[i]);
+            require(allowedToStake[_collections[i]], "Not allowed to stake for this collection");
+            require(IERC721A(_collections[i]).ownerOf(_tokenIds[i]) == msg.sender, "Not Your NFT.");
+            userInfo[_collections[i]][msg.sender].startTimestamps[_tokenIds[i]] = block.timestamp;
+            userInfo[_collections[i]][msg.sender].timeTypes[_tokenIds[i]] = _timeTypes[i];
+            userInfo[_collections[i]][msg.sender].autoRestakes[_tokenIds[i]] = false;
+            IERC721A(_collections[i]).transferFrom(msg.sender, address(this), _tokenIds[i]);
+            EnumerableSet.add(userInfo[_collections[i]][msg.sender].tokenIds, _tokenIds[i]);
+            emit Stake(_collections[i], msg.sender, _tokenIds[i], _timeTypes[i]);
         }
     }
 
@@ -480,31 +492,30 @@ contract StakingLOH is Ownable, ReentrancyGuard {
         }
     }
 
-    function getStakingInfo(address _collection, address _user) public view returns (
-        uint256[] memory _tokenIds,
-        uint256[] memory _timeTypes,
-        uint256[] memory _startTimestamps,
-        bool[] memory _autoRestakes,
-        bool[] memory _isClaimeds,
-        uint256[] memory _pendingTickets)
+    function getStakingInfo(address[] calldata _collections, address _user) public view returns (StakingInfo[] memory _nftsStaked)
     {
-        UserInfo storage _userInfo = userInfo[_collection][_user];
-        uint256 length = EnumerableSet.length(_userInfo.tokenIds);
+        uint256 nftCnt = 0;
+        for (uint256 kkk = 0; kkk < _collections.length; kkk ++)
+            nftCnt += EnumerableSet.length(userInfo[_collections[kkk]][_user].tokenIds);
 
-        _tokenIds = new uint256[](length);
-        _timeTypes = new uint256[](length);
-        _startTimestamps = new uint256[](length);
-        _autoRestakes = new bool[](length);
-        _isClaimeds = new bool[](length);
-        _pendingTickets = new uint256[](length);
+        _nftsStaked = new StakingInfo[](nftCnt);
 
-        for(uint256 i = 0; i < length; i++) {
-            _tokenIds[i] = EnumerableSet.at(_userInfo.tokenIds, i);
-            _timeTypes[i] = _userInfo.timeTypes[_tokenIds[i]];
-            _startTimestamps[i] = _userInfo.startTimestamps[_tokenIds[i]];
-            _autoRestakes[i] = _userInfo.autoRestakes[_tokenIds[i]];
-            _isClaimeds[i] = _userInfo.isClaimeds[_tokenIds[i]];
-            (_pendingTickets[i], ) = pendingTicket(_collection, _user, _tokenIds[i]);
+        uint256 tempCnt = 0;
+
+        for (uint256 kkk = 0; kkk < _collections.length; kkk ++) {
+            UserInfo storage _userInfo = userInfo[_collections[kkk]][_user];
+            uint256 length = EnumerableSet.length(_userInfo.tokenIds);
+
+            for(uint256 i = 0; i < length; i++) {
+                _nftsStaked[tempCnt]._address = _collections[kkk];
+                _nftsStaked[tempCnt]._tokenId = EnumerableSet.at(_userInfo.tokenIds, i);
+                _nftsStaked[tempCnt]._timeType = _userInfo.timeTypes[_nftsStaked[tempCnt]._tokenId];
+                _nftsStaked[tempCnt]._startTimestamp = _userInfo.startTimestamps[_nftsStaked[tempCnt]._tokenId];
+                _nftsStaked[tempCnt]._autoRestake = _userInfo.autoRestakes[_nftsStaked[tempCnt]._tokenId];
+                _nftsStaked[tempCnt]._isClaimed = _userInfo.isClaimeds[_nftsStaked[tempCnt]._tokenId];
+                (_nftsStaked[tempCnt]._pendingTicket, ) = pendingTicket(_collections[kkk], _user, _nftsStaked[tempCnt]._tokenId);
+                tempCnt ++;
+            }
         }
     }
 }
