@@ -127,6 +127,11 @@ contract StakingLOH is Ownable, ReentrancyGuard {
         uint256 token_id;
     }
 
+    struct ApprovalStatus {
+        address token_address;
+        bool    isApproval;
+    }
+
     IERC20 public lohTicket;
     mapping(address => bool) public allowedToStake;
 
@@ -392,5 +397,27 @@ contract StakingLOH is Ownable, ReentrancyGuard {
             }
         }
         return _tokensInWallet;
+    }
+
+    function getApprovalStatus(address[] calldata _collections, address _user) public view returns (ApprovalStatus[] memory _approvalStatus) {
+        uint256 collectionCnt = 0;
+        for (uint256 i = 0; i < _collections.length; i ++) {
+            if (allowedToStake[_collections[i]] == true)
+                collectionCnt ++;
+        }
+
+        _approvalStatus = new ApprovalStatus[](collectionCnt);
+
+        uint256 tempCnt = 0;
+
+        for (uint256 i = 0; i < _collections.length; i ++) {
+            if (allowedToStake[_collections[i]] == true) {
+                _approvalStatus[tempCnt].token_address = _collections[i];
+                _approvalStatus[tempCnt].isApproval = IERC721A(_collections[i]).isApprovedForAll(_user, address(this));
+                tempCnt ++;
+            }
+        }
+
+        return _approvalStatus;
     }
 }

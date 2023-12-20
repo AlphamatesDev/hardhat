@@ -83,7 +83,7 @@ contract RaffleLOH is Ownable {
     }
 
     function decideWinners() public onlyOwner {
-        require(timeStart + period > block.timestamp, "Not finished Depositing time yet!");
+        require(timeStart + period < block.timestamp, "Not finished Depositing time yet!");
 
         for (uint256 i = 0; i < cntRaffles; i ++) {
             if (raffleInfo[i].totalTicketCnt > 0) {
