@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IPriceFeedExt {
@@ -14,28 +14,29 @@ interface IPriceFeedExt {
     function latestAnswer() external view returns (PriceInfo memory priceInfo);
 }
 
-contract LOHTicketRouter is OwnableUpgradeable {
-
+contract LOHTicketRouter is Ownable {
     IERC20 public _lohTicketAddress;
     uint256 public lohTicketPrice_USD;
 
     mapping (address => uint256) private _userPaid_CRO;
     IPriceFeedExt public priceFeed_CRO;
     
+    address private teamAddress;
+
     event BuyLOHTicket(address _from, address _to, uint256 _amount);
     event WithdrawAll(address addr);
 
     receive() payable external {}
     fallback() payable external {}
 
-    function initialize ()  public initializer {
-        __Ownable_init();
-
+    constructor() {
         _lohTicketAddress = IERC20(0xf1A5A831ca54AE6AD36a012F5FB2768e6f5d954A);
 
         priceFeed_CRO = IPriceFeedExt(0x5B55012bC6DBf545B6a5ab6237030f79b1E38beD);
 
         lohTicketPrice_USD = 0.35 * 10 ** 8; // 35 Cents per ticket
+
+        teamAddress = msg.sender;
     }
 
     function buyLOHTicketsByCRO() external payable {
@@ -50,6 +51,9 @@ contract LOHTicketRouter is OwnableUpgradeable {
 
         // add USD user bought
         _userPaid_CRO[msg.sender] += amountPrice;
+
+        // transfer CRO to teamAddress
+        payable(teamAddress).transfer(msg.value);
 
         emit BuyLOHTicket(address(this), msg.sender, lohTicketAmount);
     }
@@ -66,6 +70,9 @@ contract LOHTicketRouter is OwnableUpgradeable {
 
         // transfer reward to referral provider
         payable(toReward).transfer(msg.value * 5 / 100);
+
+        // transfer CRO to teamAddress
+        payable(teamAddress).transfer(msg.value * 95 / 100);
 
         // add USD user bought
         _userPaid_CRO[msg.sender] += amountPrice;
@@ -102,5 +109,9 @@ contract LOHTicketRouter is OwnableUpgradeable {
     /* Price Decimal is 8 */
     function setLOHTicketPriceByUSD(uint256 _lohTicketPrice) public onlyOwner {
         lohTicketPrice_USD = _lohTicketPrice;
+    }
+
+    function setTeamAddress(address _teamAddress) public onlyOwner {
+        teamAddress = _teamAddress;
     }
 }

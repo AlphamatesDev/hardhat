@@ -134,7 +134,7 @@ module.exports = {
     },
     cronos: {
       url: CRONOS_URL,
-      gasPrice: 50000000000000,
+      gasPrice: 30000000000000,
       chainId: 25,
       accounts:[CRONOS_DEPLOY_KEY]
     },
