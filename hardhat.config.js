@@ -138,7 +138,7 @@ module.exports = {
       chainId: 25,
       accounts:[CRONOS_DEPLOY_KEY]
     },
-    cronostest: {
+    cronosTestnet: {
       url: CRONOS_TESTNET_URL,
       gasPrice: 5000000000000,
       chainId: 338,
@@ -161,6 +161,7 @@ module.exports = {
       polygon: POLYGONSCAN_API_KEY,
       goerli: ETHERSCAN_API_KEY,
       cronos: CRONOSSCAN_API_KEY,
+      cronosTestnet: CRONOSSCAN_API_KEY,
       pulse: PULSESCAN_API_KEY,
     },
     customChains: [
@@ -170,6 +171,14 @@ module.exports = {
         urls: {
           apiURL: "https://api.scan.pulsechain.com/api",
           browserURL: "https://api.scan.pulsechain.com/",
+        }
+      },
+      {
+        network: "cronosTestnet",
+        chainId: 338,
+        urls: {
+          apiURL: "https://explorer.cronos.org/testnet/api",
+          browserURL: "https://explorer.cronos.org/testnet/",
         }
       }
     ]
