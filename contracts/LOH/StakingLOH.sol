@@ -138,6 +138,8 @@ contract StakingLOH is Ownable, ReentrancyGuard {
     /* 5: Rarity Types, 4: Time Types */
     RewardCondition[5][4] rewardCondition;
 
+    bool public autoRestakeAsDefault;
+
     mapping(address => mapping(address => UserInfo)) userInfo;
 
     event Stake(address indexed collection, address indexed user, uint256 tokenId, uint256 timeType);
@@ -148,50 +150,56 @@ contract StakingLOH is Ownable, ReentrancyGuard {
         lohTicket = IERC20(0xf1A5A831ca54AE6AD36a012F5FB2768e6f5d954A);
         allowedToStake[0x51084c32AA5ee43a0e7bD8220195da53b5c69868] = true; // Volume 1
         allowedToStake[0x770FA15c43b84F61434321F5167814b64790E6Fa] = true; // Reapers
+        autoRestakeAsDefault = true;
         
-        rewardCondition[0][0].amount = 1;
-        rewardCondition[0][1].amount = 2;
-        rewardCondition[0][2].amount = 3;
-        rewardCondition[0][3].amount = 4;
-        rewardCondition[0][4].amount = 5;
+        rewardCondition[0][0].amount = 1 * 10 ** 18;
+        rewardCondition[0][1].amount = 2 * 10 ** 18;
+        rewardCondition[0][2].amount = 3 * 10 ** 18;
+        rewardCondition[0][3].amount = 4 * 10 ** 18;
+        rewardCondition[0][4].amount = 5 * 10 ** 18;
         rewardCondition[0][0].period = 604800;
         rewardCondition[0][1].period = 604800;
         rewardCondition[0][2].period = 604800;
         rewardCondition[0][3].period = 604800;
         rewardCondition[0][4].period = 604800;
 
-        rewardCondition[1][0].amount = 5;
-        rewardCondition[1][1].amount = 9;
-        rewardCondition[1][2].amount = 14;
-        rewardCondition[1][3].amount = 17;
-        rewardCondition[1][4].amount = 21;
+        rewardCondition[1][0].amount = 5 * 10 ** 18;
+        rewardCondition[1][1].amount = 9 * 10 ** 18;
+        rewardCondition[1][2].amount = 14 * 10 ** 18;
+        rewardCondition[1][3].amount = 17 * 10 ** 18;
+        rewardCondition[1][4].amount = 21 * 10 ** 18;
         rewardCondition[1][0].period = 2592000;
         rewardCondition[1][1].period = 2592000;
         rewardCondition[1][2].period = 2592000;
         rewardCondition[1][3].period = 2592000;
         rewardCondition[1][4].period = 2592000;
 
-        rewardCondition[2][0].amount = 11;
-        rewardCondition[2][1].amount = 19;
-        rewardCondition[2][2].amount = 29;
-        rewardCondition[2][3].amount = 36;
-        rewardCondition[2][4].amount = 43;
+        rewardCondition[2][0].amount = 11 * 10 ** 18;
+        rewardCondition[2][1].amount = 19 * 10 ** 18;
+        rewardCondition[2][2].amount = 29 * 10 ** 18;
+        rewardCondition[2][3].amount = 36 * 10 ** 18;
+        rewardCondition[2][4].amount = 43 * 10 ** 18;
         rewardCondition[2][0].period = 5184000;
         rewardCondition[2][1].period = 5184000;
         rewardCondition[2][2].period = 5184000;
         rewardCondition[2][3].period = 5184000;
         rewardCondition[2][4].period = 5184000;
 
-        rewardCondition[3][0].amount = 17;
-        rewardCondition[3][1].amount = 31;
-        rewardCondition[3][2].amount = 47;
-        rewardCondition[3][3].amount = 59;
-        rewardCondition[3][4].amount = 70;
+        rewardCondition[3][0].amount = 17 * 10 ** 18;
+        rewardCondition[3][1].amount = 31 * 10 ** 18;
+        rewardCondition[3][2].amount = 47 * 10 ** 18;
+        rewardCondition[3][3].amount = 59 * 10 ** 18;
+        rewardCondition[3][4].amount = 70 * 10 ** 18;
         rewardCondition[3][0].period = 7776000;
         rewardCondition[3][1].period = 7776000;
         rewardCondition[3][2].period = 7776000;
         rewardCondition[3][3].period = 7776000;
         rewardCondition[3][4].period = 7776000;
+    }
+
+    function setRewardCondition(uint256 _timeType, uint256 _rarity, uint256 _amount, uint256 _period) external onlyOwner {
+        rewardCondition[_timeType][_rarity].amount = _amount;
+        rewardCondition[_timeType][_rarity].period = _period;
     }
 
     function setRewardTokenAddress(address _rewardTokenAddress) external onlyOwner {
@@ -200,6 +208,10 @@ contract StakingLOH is Ownable, ReentrancyGuard {
 
     function allowCollectionToStake(address _collection, bool _allow) external onlyOwner {
         allowedToStake[_collection] = _allow;
+    }
+
+    function setAutoRestakeAsDefault(bool _autoRestakeAsDefault) external onlyOwner {
+        autoRestakeAsDefault = _autoRestakeAsDefault;
     }
 
     function withdrawTickets() external onlyOwner {
@@ -268,7 +280,7 @@ contract StakingLOH is Ownable, ReentrancyGuard {
             require(IERC721A(_collections[i]).ownerOf(_tokenIds[i]) == msg.sender, "Not Your NFT.");
             userInfo[_collections[i]][msg.sender].startTimestamps[_tokenIds[i]] = block.timestamp;
             userInfo[_collections[i]][msg.sender].timeTypes[_tokenIds[i]] = _timeTypes[i];
-            userInfo[_collections[i]][msg.sender].autoRestakes[_tokenIds[i]] = false;
+            userInfo[_collections[i]][msg.sender].autoRestakes[_tokenIds[i]] = autoRestakeAsDefault;
             IERC721A(_collections[i]).transferFrom(msg.sender, address(this), _tokenIds[i]);
             EnumerableSet.add(userInfo[_collections[i]][msg.sender].tokenIds, _tokenIds[i]);
             emit Stake(_collections[i], msg.sender, _tokenIds[i], _timeTypes[i]);
