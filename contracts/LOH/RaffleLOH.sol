@@ -105,11 +105,14 @@ contract RaffleLOH is Ownable {
         require(timeStart + period > block.timestamp, "Passed Raffle Time!");
         require(!raffleInfo[_indexRaffle].isFinished, "Finished Raffle");
         require(!raffleInfo[_indexRaffle].isDisabled, "Disabled Raffle");
+        require(_indexRaffle < cntRaffles, "Invalid Raffle Index");
+        require(_ticketCnt > 0, "Invalid Ticket Count");
 
         for (uint256 i = 0; i < _ticketCnt; i ++) {
             raffleInfo[_indexRaffle].userAddressPerTicket[raffleInfo[_indexRaffle].totalTicketCnt] = msg.sender;
             raffleInfo[_indexRaffle].totalTicketCnt ++;
         }
+        lohTicketAddress.transferFrom(msg.sender, address(this), _ticketCnt);
         raffleInfo[_indexRaffle].ticketCntPerUser[msg.sender] += _ticketCnt;
     }
 
