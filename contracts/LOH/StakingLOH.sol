@@ -135,8 +135,8 @@ contract StakingLOH is Ownable, ReentrancyGuard {
     IERC20 public lohTicket;
     mapping(address => bool) public allowedToStake;
 
-    /* 5: Rarity Types, 4: Time Types */
-    RewardCondition[5][4] rewardCondition;
+    /* 4: Time Types, 5: Rarity Types */
+    RewardCondition[5][4] public rewardCondition;
 
     bool public autoRestakeAsDefault;
 
@@ -266,7 +266,7 @@ contract StakingLOH is Ownable, ReentrancyGuard {
                 nextTimestamp = startTimestamp;
             } else {
                 pendingRewards = condition.amount * ((block.timestamp - startTimestamp) / condition.period);
-                nextTimestamp += uint256((block.timestamp - startTimestamp) / condition.period) * condition.period;
+                nextTimestamp = startTimestamp + ((block.timestamp - startTimestamp) / condition.period) * condition.period;
             }
         }
         return (pendingRewards, nextTimestamp);
@@ -326,11 +326,12 @@ contract StakingLOH is Ownable, ReentrancyGuard {
 
         for(uint256 i = 0; i < _tokenIds.length; i++) {
             UserInfo storage _userInfo = userInfo[_collections[i]][msg.sender];
-            require(EnumerableSet.remove(_userInfo.tokenIds, _tokenIds[i]), "Not your NFT Id.");
+            require(EnumerableSet.contains(_userInfo.tokenIds, _tokenIds[i]), "Not Your NFT.");
             (uint256 _pendingTickets, ) = pendingTicket(_collections[i], msg.sender, _tokenIds[i]);
             if(_pendingTickets > 0) {
                 require(lohTicket.transfer(msg.sender, _pendingTickets), "Reward Token Transfer is failed.");
             }
+            require(EnumerableSet.remove(_userInfo.tokenIds, _tokenIds[i]), "Not your NFT Id.");
             IERC721A(_collections[i]).transferFrom(address(this), msg.sender, _tokenIds[i]);
             
             userInfo[_collections[i]][msg.sender].startTimestamps[_tokenIds[i]] = block.timestamp;

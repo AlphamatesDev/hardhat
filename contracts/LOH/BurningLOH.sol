@@ -137,9 +137,9 @@ contract BurningLOH is Ownable, ReentrancyGuard {
 
     mapping(address => bool) public allowedToBurn;
 
-    mapping(address => uint256) pointAmount;
+    mapping(address => uint256) public pointAmount;
 
-    mapping(address => uint256) pointsPerUser;
+    mapping(address => uint256) public pointsPerUser;
 
     event Burn(address _user, address _collection, uint256 _tokenId, uint256 _pointAmount);
 

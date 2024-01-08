@@ -83,8 +83,6 @@ contract RaffleLOH is Ownable {
     }
 
     function decideWinners() public onlyOwner {
-        require(timeStart + period < block.timestamp, "Not finished Depositing time yet!");
-
         for (uint256 i = 0; i < cntRaffles; i ++) {
             if (raffleInfo[i].totalTicketCnt > 0) {
                 uint256 winnerIndex = getRandomNumber(i, raffleInfo[i].totalTicketCnt);
@@ -112,7 +110,7 @@ contract RaffleLOH is Ownable {
             raffleInfo[_indexRaffle].userAddressPerTicket[raffleInfo[_indexRaffle].totalTicketCnt] = msg.sender;
             raffleInfo[_indexRaffle].totalTicketCnt ++;
         }
-        lohTicketAddress.transferFrom(msg.sender, address(this), _ticketCnt);
+        lohTicketAddress.transferFrom(msg.sender, address(this), _ticketCnt * 10 ** 18);
         raffleInfo[_indexRaffle].ticketCntPerUser[msg.sender] += _ticketCnt;
     }
 

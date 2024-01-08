@@ -47,7 +47,7 @@ contract LOHTicketRouter is Ownable {
         uint256 lohTicketAmount = amountPrice / lohTicketPrice_USD;
 
         // transfer lohTicket to user
-        _lohTicketAddress.transfer(msg.sender, lohTicketAmount);
+        _lohTicketAddress.transfer(msg.sender, (lohTicketAmount > 5 * 10 ** 17) ? (lohTicketAmount + 10 ** 16): lohTicketAmount);
 
         // add USD user bought
         _userPaid_CRO[msg.sender] += amountPrice;
@@ -66,7 +66,7 @@ contract LOHTicketRouter is Ownable {
         uint256 lohTicketAmount = amountPrice / lohTicketPrice_USD;
 
         // transfer lohTicket to user
-        _lohTicketAddress.transfer(msg.sender, lohTicketAmount);
+        _lohTicketAddress.transfer(msg.sender, (lohTicketAmount > 5 * 10 ** 17) ? (lohTicketAmount + 10 ** 16): lohTicketAmount);
 
         // transfer reward to referral provider
         payable(toReward).transfer(msg.value * 5 / 100);
