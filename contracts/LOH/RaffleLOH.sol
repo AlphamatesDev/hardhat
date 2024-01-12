@@ -15,6 +15,8 @@ contract RaffleLOH is Ownable {
         mapping(address => uint256) ticketCntPerUser;
         bool    isDecided;
         bool    isDisabled;
+        uint256 timeStarted;
+        uint256 timeDecided;
     }
 
     struct RaffleStatus {
@@ -25,10 +27,11 @@ contract RaffleLOH is Ownable {
         uint256 ticketCntForUser;
         bool    isDecided;
         bool    isDisabled;
+        uint256 timeStarted;
+        uint256 timeDecided;
     }
 
     IERC20 public   lohTicketAddress;
-    uint256 public  timeStart;
     uint256 public  period;
     uint256 public  waitingPeriod;
     uint256 public  cntRaffles;
@@ -75,7 +78,6 @@ contract RaffleLOH is Ownable {
     }
 
     function startRaffles() public onlyOwner {
-        timeStart = block.timestamp;
         for (uint256 i = 0; i < cntRaffles; i ++) {
             for (uint256 j = 0; j < raffleInfo[i].totalTicketCnt; j ++) {
                 address user = raffleInfo[i].userAddressPerTicket[j];
@@ -85,6 +87,7 @@ contract RaffleLOH is Ownable {
             raffleInfo[i].winnerIndex = -1;
             raffleInfo[i].winner = address(0);
             raffleInfo[i].isDecided = false;
+            raffleInfo[i].timeStarted = block.timestamp;
         }
     }
 
@@ -96,6 +99,7 @@ contract RaffleLOH is Ownable {
                 raffleInfo[i].winner = raffleInfo[i].userAddressPerTicket[winnerIndex];
             }
             raffleInfo[i].isDecided = true;
+            raffleInfo[i].timeDecided = block.timestamp;
         }
     }
 
@@ -105,8 +109,8 @@ contract RaffleLOH is Ownable {
     }
 
     function addTicket(uint256 _indexRaffle, uint256 _ticketCnt) public {
-        require(timeStart < block.timestamp, "Not started Rafflet yet!");
-        require(timeStart + period > block.timestamp, "Passed Raffle Time!");
+        require(raffleInfo[_indexRaffle].timeStarted < block.timestamp, "Not started Rafflet yet!");
+        require(raffleInfo[_indexRaffle].timeStarted + period > block.timestamp, "Passed Raffle Time!");
         require(!raffleInfo[_indexRaffle].isDecided, "Finished Raffle");
         require(!raffleInfo[_indexRaffle].isDisabled, "Disabled Raffle");
         require(_indexRaffle < cntRaffles, "Invalid Raffle Index");
@@ -132,6 +136,8 @@ contract RaffleLOH is Ownable {
             _rafflesForUser[i].ticketCntForUser = raffleInfo[i].ticketCntPerUser[_userAccount];
             _rafflesForUser[i].isDecided = raffleInfo[i].isDecided;
             _rafflesForUser[i].isDisabled = raffleInfo[i].isDisabled;
+            _rafflesForUser[i].timeStarted = raffleInfo[i].timeStarted;
+            _rafflesForUser[i].timeDecided = raffleInfo[i].timeDecided;
         }
     }
 }
