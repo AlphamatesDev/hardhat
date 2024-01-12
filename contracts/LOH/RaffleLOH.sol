@@ -13,7 +13,7 @@ contract RaffleLOH is Ownable {
         uint256 totalTicketCnt;
         mapping(uint256 => address) userAddressPerTicket;
         mapping(address => uint256) ticketCntPerUser;
-        bool    isFinished;
+        bool    isDecided;
         bool    isDisabled;
     }
 
@@ -23,13 +23,14 @@ contract RaffleLOH is Ownable {
         address winner;
         uint256 totalTicketCnt;
         uint256 ticketCntForUser;
-        bool    isFinished;
+        bool    isDecided;
         bool    isDisabled;
     }
 
     IERC20 public   lohTicketAddress;
     uint256 public  timeStart;
     uint256 public  period;
+    uint256 public  waitingPeriod;
     uint256 public  cntRaffles;
     mapping(uint256 => RaffleInfo) public raffleInfo;
 
@@ -40,7 +41,8 @@ contract RaffleLOH is Ownable {
     constructor() {
         lohTicketAddress = IERC20(0xf1A5A831ca54AE6AD36a012F5FB2768e6f5d954A);
         cntRaffles = 21;
-        period = 2160000;
+        period = 2160000; // 3600 * 24 * 25
+        waitingPeriod = 432000; // 3600 * 24 * 5
     }
 
     function withdrawLOHTicket() public onlyOwner returns (bool) {
@@ -58,6 +60,10 @@ contract RaffleLOH is Ownable {
 
     function setPeriodToDeposit(uint256 _period) public onlyOwner {
         period = _period;
+    }
+
+    function setWaitingPeriodForNextRaffle(uint256 _waitingPeriod) public onlyOwner {
+        waitingPeriod = _waitingPeriod;
     }
 
     function setRaffleValue(uint256 _raffleIndex, string memory _raffleValue) public onlyOwner {
@@ -78,7 +84,7 @@ contract RaffleLOH is Ownable {
             raffleInfo[i].totalTicketCnt = 0;
             raffleInfo[i].winnerIndex = -1;
             raffleInfo[i].winner = address(0);
-            raffleInfo[i].isFinished = false;
+            raffleInfo[i].isDecided = false;
         }
     }
 
@@ -89,7 +95,7 @@ contract RaffleLOH is Ownable {
                 raffleInfo[i].winnerIndex = int256(winnerIndex);
                 raffleInfo[i].winner = raffleInfo[i].userAddressPerTicket[winnerIndex];
             }
-            raffleInfo[i].isFinished = true;
+            raffleInfo[i].isDecided = true;
         }
     }
 
@@ -101,7 +107,7 @@ contract RaffleLOH is Ownable {
     function addTicket(uint256 _indexRaffle, uint256 _ticketCnt) public {
         require(timeStart < block.timestamp, "Not started Rafflet yet!");
         require(timeStart + period > block.timestamp, "Passed Raffle Time!");
-        require(!raffleInfo[_indexRaffle].isFinished, "Finished Raffle");
+        require(!raffleInfo[_indexRaffle].isDecided, "Finished Raffle");
         require(!raffleInfo[_indexRaffle].isDisabled, "Disabled Raffle");
         require(_indexRaffle < cntRaffles, "Invalid Raffle Index");
         require(_ticketCnt > 0, "Invalid Ticket Count");
@@ -124,7 +130,7 @@ contract RaffleLOH is Ownable {
             _rafflesForUser[i].winner = raffleInfo[i].winner;
             _rafflesForUser[i].totalTicketCnt = raffleInfo[i].totalTicketCnt;
             _rafflesForUser[i].ticketCntForUser = raffleInfo[i].ticketCntPerUser[_userAccount];
-            _rafflesForUser[i].isFinished = raffleInfo[i].isFinished;
+            _rafflesForUser[i].isDecided = raffleInfo[i].isDecided;
             _rafflesForUser[i].isDisabled = raffleInfo[i].isDisabled;
         }
     }
