@@ -11,6 +11,7 @@ contract PulsePixelCartel is ERC721Enumerable, Ownable {
     using Strings for uint256;
     
     string  private _baseURIextended;
+    string  private _metadataExtension;
     string  public unrevealURI;
     bool    public reveal;
     
@@ -37,7 +38,7 @@ contract PulsePixelCartel is ERC721Enumerable, Ownable {
         MAX_NFT_SUPPLY = 3333;
         MINT_LIMIT_TRANSACTION = 10;
 
-        unrevealURI = "https://bullhead.mypinata.cloud/ipfs/Qmd1zs6QkBVKQzzpeFSoS7g9ZLUE338Dm1RTnYMszgMmeL/1";
+        unrevealURI = "https://ipfs.io/ipfs/QmTMBP7a9JtqLA23W5RNL7Ruz6sz2VqMhxefuXpKCm86f3/1.json";
 
         marketingFee = payable(0xb8A492d722ac951a53f59423EFF6C24ACAB71392);
         devFee = payable(0x59790E88301b2376d5c3C421D6B4b6D640D18E8d);
@@ -90,7 +91,7 @@ contract PulsePixelCartel is ERC721Enumerable, Ownable {
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
         if(!reveal) return unrevealURI;
-        return bytes(_baseURIextended).length > 0 ? string(abi.encodePacked(_baseURIextended, tokenId.toString())) : "";
+        return bytes(_baseURIextended).length > 0 ? string(abi.encodePacked(_baseURIextended, tokenId.toString(), _metadataExtension)) : "";
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
@@ -99,6 +100,10 @@ contract PulsePixelCartel is ERC721Enumerable, Ownable {
 
     function setBaseURI(string memory baseURI_) external onlyOwner() {
         _baseURIextended = baseURI_;
+    }
+
+    function setMetadataExtension(string memory extension_) external onlyOwner() {
+        _metadataExtension = extension_;
     }
 
     function setUnrevealURI(string memory _uri) external onlyOwner() {
