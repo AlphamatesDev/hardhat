@@ -27,7 +27,7 @@ contract StakingPPC is Ownable, ReentrancyGuard {
     receive() external payable {}
 
     constructor() {
-        collectionToStake = 0xCbA43d9fa84459F91c2D6bEdA2706FE127Ce3d22;
+        collectionToStake = 0x618c0e2c40487C86c313eF88217e86829c3355eE;
         cntStakedRewardableNFT = 0;
         rewardSpeedUp = 1; // 1x
     }

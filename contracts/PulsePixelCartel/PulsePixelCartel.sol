@@ -34,10 +34,12 @@ contract PulsePixelCartel is ERC721Enumerable, Ownable {
     event MintNFT(address indexed _minter, uint256 _amount, address indexed _referrer);
 
     constructor() ERC721("PulsePixel Cartel", "PPC") {
-        mintPrice = 450000000000000000000000;
+        mintPrice = 100000000000000000000000;
         MAX_NFT_SUPPLY = 3333;
         MINT_LIMIT_TRANSACTION = 10;
 
+        _baseURIextended = "https://ipfs.io/ipfs/QmTMBP7a9JtqLA23W5RNL7Ruz6sz2VqMhxefuXpKCm86f3/";
+        _metadataExtension = ".json";
         unrevealURI = "https://ipfs.io/ipfs/QmTMBP7a9JtqLA23W5RNL7Ruz6sz2VqMhxefuXpKCm86f3/1.json";
 
         marketingFee = payable(0xb8A492d722ac951a53f59423EFF6C24ACAB71392);

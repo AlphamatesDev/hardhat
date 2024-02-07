@@ -133,10 +133,14 @@ contract StakingLOH is Ownable, ReentrancyGuard {
     }
 
     IERC20 public lohTicket;
+    
     mapping(address => bool) public allowedToStake;
 
-    /* 4: Time Types, 5: Rarity Types */
-    RewardCondition[5][4] public rewardCondition;
+    /* -1: Volumes */
+    mapping(address => int256) public rarityPerCollection;
+
+    /* 4: Time Types, 20: Rarity Types */
+    RewardCondition[20][4] public rewardCondition;
 
     bool public autoRestakeAsDefault;
 
@@ -148,53 +152,130 @@ contract StakingLOH is Ownable, ReentrancyGuard {
 
     constructor() {
         lohTicket = IERC20(0xf1A5A831ca54AE6AD36a012F5FB2768e6f5d954A);
+
         allowedToStake[0x51084c32AA5ee43a0e7bD8220195da53b5c69868] = true; // Volume 1
         allowedToStake[0x770FA15c43b84F61434321F5167814b64790E6Fa] = true; // Reapers
+
+        rarityPerCollection[0x51084c32AA5ee43a0e7bD8220195da53b5c69868] = -1;
+        rarityPerCollection[0x770FA15c43b84F61434321F5167814b64790E6Fa] = 4;
+        
         autoRestakeAsDefault = true;
         
         rewardCondition[0][0].amount = 1 * 10 ** 18;
         rewardCondition[0][1].amount = 2 * 10 ** 18;
         rewardCondition[0][2].amount = 3 * 10 ** 18;
         rewardCondition[0][3].amount = 4 * 10 ** 18;
-        rewardCondition[0][4].amount = 5 * 10 ** 18;
+        rewardCondition[0][4].amount = 5 * 10 ** 18; // Reapers
+        rewardCondition[0][5].amount = 12 * 10 ** 18; // Humans
+        rewardCondition[0][6].amount = 7 * 10 ** 18; // Gods
+        rewardCondition[0][7].amount = 0 * 10 ** 18; // HELMates
         rewardCondition[0][0].period = 604800;
         rewardCondition[0][1].period = 604800;
         rewardCondition[0][2].period = 604800;
         rewardCondition[0][3].period = 604800;
         rewardCondition[0][4].period = 604800;
+        rewardCondition[0][5].period = 604800;
+        rewardCondition[0][6].period = 604800;
+        rewardCondition[0][7].period = 604800;
+        rewardCondition[0][8].period = 604800;
+        rewardCondition[0][9].period = 604800;
+        rewardCondition[0][10].period = 604800;
+        rewardCondition[0][11].period = 604800;
+        rewardCondition[0][12].period = 604800;
+        rewardCondition[0][13].period = 604800;
+        rewardCondition[0][14].period = 604800;
+        rewardCondition[0][15].period = 604800;
+        rewardCondition[0][16].period = 604800;
+        rewardCondition[0][17].period = 604800;
+        rewardCondition[0][18].period = 604800;
+        rewardCondition[0][19].period = 604800;
 
         rewardCondition[1][0].amount = 5 * 10 ** 18;
         rewardCondition[1][1].amount = 9 * 10 ** 18;
         rewardCondition[1][2].amount = 14 * 10 ** 18;
         rewardCondition[1][3].amount = 17 * 10 ** 18;
-        rewardCondition[1][4].amount = 21 * 10 ** 18;
+        rewardCondition[1][4].amount = 21 * 10 ** 18; // Reapers
+        rewardCondition[1][5].amount = 54 * 10 ** 18; // Humans
+        rewardCondition[1][6].amount = 31 * 10 ** 18; // Gods
+        rewardCondition[1][7].amount = 0 * 10 ** 18; // HELMates
         rewardCondition[1][0].period = 2592000;
         rewardCondition[1][1].period = 2592000;
         rewardCondition[1][2].period = 2592000;
         rewardCondition[1][3].period = 2592000;
         rewardCondition[1][4].period = 2592000;
+        rewardCondition[1][5].period = 2592000;
+        rewardCondition[1][6].period = 2592000;
+        rewardCondition[1][7].period = 2592000;
+        rewardCondition[1][8].period = 2592000;
+        rewardCondition[1][9].period = 2592000;
+        rewardCondition[1][10].period = 2592000;
+        rewardCondition[1][11].period = 2592000;
+        rewardCondition[1][12].period = 2592000;
+        rewardCondition[1][13].period = 2592000;
+        rewardCondition[1][14].period = 2592000;
+        rewardCondition[1][15].period = 2592000;
+        rewardCondition[1][16].period = 2592000;
+        rewardCondition[1][17].period = 2592000;
+        rewardCondition[1][18].period = 2592000;
+        rewardCondition[1][19].period = 2592000;
 
         rewardCondition[2][0].amount = 11 * 10 ** 18;
         rewardCondition[2][1].amount = 19 * 10 ** 18;
         rewardCondition[2][2].amount = 29 * 10 ** 18;
         rewardCondition[2][3].amount = 36 * 10 ** 18;
-        rewardCondition[2][4].amount = 43 * 10 ** 18;
+        rewardCondition[2][4].amount = 43 * 10 ** 18; // Reapers
+        rewardCondition[2][5].amount = 112 * 10 ** 18; // Humans
+        rewardCondition[2][6].amount = 65 * 10 ** 18; // Gods
+        rewardCondition[2][7].amount = 1 * 10 ** 18; // HELMates
         rewardCondition[2][0].period = 5184000;
         rewardCondition[2][1].period = 5184000;
         rewardCondition[2][2].period = 5184000;
         rewardCondition[2][3].period = 5184000;
         rewardCondition[2][4].period = 5184000;
+        rewardCondition[2][5].period = 5184000;
+        rewardCondition[2][6].period = 5184000;
+        rewardCondition[2][7].period = 5184000;
+        rewardCondition[2][8].period = 5184000;
+        rewardCondition[2][9].period = 5184000;
+        rewardCondition[2][10].period = 5184000;
+        rewardCondition[2][11].period = 5184000;
+        rewardCondition[2][12].period = 5184000;
+        rewardCondition[2][13].period = 5184000;
+        rewardCondition[2][14].period = 5184000;
+        rewardCondition[2][15].period = 5184000;
+        rewardCondition[2][16].period = 5184000;
+        rewardCondition[2][17].period = 5184000;
+        rewardCondition[2][18].period = 5184000;
+        rewardCondition[2][19].period = 5184000;
 
         rewardCondition[3][0].amount = 17 * 10 ** 18;
         rewardCondition[3][1].amount = 31 * 10 ** 18;
         rewardCondition[3][2].amount = 47 * 10 ** 18;
         rewardCondition[3][3].amount = 59 * 10 ** 18;
-        rewardCondition[3][4].amount = 70 * 10 ** 18;
+        rewardCondition[3][4].amount = 70 * 10 ** 18; // Reapers
+        rewardCondition[3][5].amount = 183 * 10 ** 18; // Humans
+        rewardCondition[3][6].amount = 105 * 10 ** 18; // Gods
+        rewardCondition[3][7].amount = 3 * 10 ** 18; // HELMates
         rewardCondition[3][0].period = 7776000;
         rewardCondition[3][1].period = 7776000;
         rewardCondition[3][2].period = 7776000;
         rewardCondition[3][3].period = 7776000;
         rewardCondition[3][4].period = 7776000;
+        rewardCondition[3][5].period = 7776000;
+        rewardCondition[3][6].period = 7776000;
+        rewardCondition[3][7].period = 7776000;
+        rewardCondition[3][8].period = 7776000;
+        rewardCondition[3][9].period = 7776000;
+        rewardCondition[3][10].period = 7776000;
+        rewardCondition[3][11].period = 7776000;
+        rewardCondition[3][12].period = 7776000;
+        rewardCondition[3][13].period = 7776000;
+        rewardCondition[3][14].period = 7776000;
+        rewardCondition[3][15].period = 7776000;
+        rewardCondition[3][16].period = 7776000;
+        rewardCondition[3][17].period = 7776000;
+        rewardCondition[3][18].period = 7776000;
+        rewardCondition[3][19].period = 7776000;
     }
 
     function setRewardCondition(uint256 _timeType, uint256 _rarity, uint256 _amount, uint256 _period) external onlyOwner {
@@ -208,6 +289,10 @@ contract StakingLOH is Ownable, ReentrancyGuard {
 
     function allowCollectionToStake(address _collection, bool _allow) external onlyOwner {
         allowedToStake[_collection] = _allow;
+    }
+
+    function setRarityPerCollection(address _collection, int256 _rarity) external onlyOwner {
+        rarityPerCollection[_collection] = _rarity;
     }
 
     function setAutoRestakeAsDefault(bool _autoRestakeAsDefault) external onlyOwner {
@@ -227,9 +312,9 @@ contract StakingLOH is Ownable, ReentrancyGuard {
         }
     }
 
-    function getRarity(address _collection, uint256 _tokenId) public pure returns (uint256) {
-        if (_collection == 0x770FA15c43b84F61434321F5167814b64790E6Fa)
-            return 4;
+    function getRarity(address _collection, uint256 _tokenId) public view returns (uint256) {
+        if (rarityPerCollection[_collection] != -1)
+            return uint256(rarityPerCollection[_collection]);
 
         if (_tokenId >= 1 && _tokenId <= 150)
             return 3;
