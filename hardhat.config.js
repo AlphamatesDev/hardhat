@@ -116,7 +116,7 @@ module.exports = {
     },
     polygon: {
       url: POLYGON_URL,
-      gasPrice: 500000000000,
+      gasPrice: 250000000000,
       chainId: 137,
       accounts: [POLYGON_DEPLOY_KEY]
     },
